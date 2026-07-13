@@ -1,0 +1,458 @@
+From: <Saved by Blink>
+Snapshot-Content-Location: file:///Users/csather/Downloads/mustang-preset-loader_1.html
+Subject: Mustang Preset Loader
+Date: Mon, 13 Jul 2026 11:33:28 -0500
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----MultipartBoundary--bYQ3sFV1RwTrSLhi4JBbCHYa3WpAJiBFIIuX1s6mTu----"
+
+
+------MultipartBoundary--bYQ3sFV1RwTrSLhi4JBbCHYa3WpAJiBFIIuX1s6mTu----
+Content-Type: text/html
+Content-ID: <frame-376F66164DAD8F5D8F9686C02ED4D2A8@mhtml.blink>
+Content-Transfer-Encoding: quoted-printable
+Content-Location: file:///Users/csather/Downloads/mustang-preset-loader_1.html
+
+<!DOCTYPE html><html lang=3D"en"><head><meta http-equiv=3D"Content-Type" co=
+ntent=3D"text/html; charset=3DUTF-8"><link rel=3D"stylesheet" type=3D"text/=
+css" href=3D"cid:css-e3874b1f-14cb-420d-963e-84cabb65aa57@mhtml.blink" />
+
+<meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=3D1.=
+0">
+<title>Mustang Preset Loader</title>
+<link rel=3D"preconnect" href=3D"https://fonts.googleapis.com/">
+<link href=3D"https://fonts.googleapis.com/css2?family=3DFraunces:opsz,wght=
+@9..144,400;9..144,600;9..144,700&amp;family=3DJetBrains+Mono:wght@400;500;=
+700&amp;display=3Dswap" rel=3D"stylesheet">
+
+</head>
+<body>
+<div class=3D"wrap">
+
+<header>
+  <div class=3D"jewel" id=3D"jewel"></div>
+  <div>
+    <h1>Mustang Preset Loader</h1>
+    <div class=3D"sub" id=3D"ampStatus">No amp connected</div>
+  </div>
+  <div class=3D"spacer"></div>
+  <button id=3D"btnConnect">Connect Amp</button>
+</header>
+
+<div class=3D"callout" id=3D"hidWarn" style=3D"display:none">
+  =E2=9A=A0=EF=B8=8F WebHID isn't available here. Open this file in <b>Chro=
+me</b> or <b>Edge</b> on your Mac
+  (Safari and Firefox don't support WebHID). If it still doesn't appear, se=
+rve the file locally:
+  <code>python3 -m http.server</code> then visit <code>http://localhost:800=
+0</code>.
+</div>
+
+<section>
+  <h2>Preset Library</h2>
+  <div class=3D"hint">Import .fuse files from the community archives, then =
+send them straight to your Mustang II.</div>
+  <div id=3D"drop">Drop <b>.fuse</b> files here =E2=80=94 or click to brows=
+e</div>
+  <input id=3D"search" type=3D"text" placeholder=3D"Filter presets=E2=80=A6=
+" style=3D"margin-top:12px">
+  <div id=3D"library"><div class=3D"hint" style=3D"padding:8px 2px">Library=
+ is empty =E2=80=94 drop some .fuse files above.</div></div>
+</section>
+
+<section>
+  <h2>On the Amp</h2>
+  <div class=3D"hint">The 24 memory banks currently stored in your Mustang =
+II (read on connect).</div>
+  <div class=3D"card"><div id=3D"slots"><div class=3D"slot"><b>BANK 01</b><=
+span style=3D"color:#b0a48e">=E2=80=94</span></div><div class=3D"slot"><b>B=
+ANK 02</b><span style=3D"color:#b0a48e">=E2=80=94</span></div><div class=3D=
+"slot"><b>BANK 03</b><span style=3D"color:#b0a48e">=E2=80=94</span></div><d=
+iv class=3D"slot"><b>BANK 04</b><span style=3D"color:#b0a48e">=E2=80=94</sp=
+an></div><div class=3D"slot"><b>BANK 05</b><span style=3D"color:#b0a48e">=
+=E2=80=94</span></div><div class=3D"slot"><b>BANK 06</b><span style=3D"colo=
+r:#b0a48e">=E2=80=94</span></div><div class=3D"slot"><b>BANK 07</b><span st=
+yle=3D"color:#b0a48e">=E2=80=94</span></div><div class=3D"slot"><b>BANK 08<=
+/b><span style=3D"color:#b0a48e">=E2=80=94</span></div><div class=3D"slot">=
+<b>BANK 09</b><span style=3D"color:#b0a48e">=E2=80=94</span></div><div clas=
+s=3D"slot"><b>BANK 10</b><span style=3D"color:#b0a48e">=E2=80=94</span></di=
+v><div class=3D"slot"><b>BANK 11</b><span style=3D"color:#b0a48e">=E2=80=94=
+</span></div><div class=3D"slot"><b>BANK 12</b><span style=3D"color:#b0a48e=
+">=E2=80=94</span></div><div class=3D"slot"><b>BANK 13</b><span style=3D"co=
+lor:#b0a48e">=E2=80=94</span></div><div class=3D"slot"><b>BANK 14</b><span =
+style=3D"color:#b0a48e">=E2=80=94</span></div><div class=3D"slot"><b>BANK 1=
+5</b><span style=3D"color:#b0a48e">=E2=80=94</span></div><div class=3D"slot=
+"><b>BANK 16</b><span style=3D"color:#b0a48e">=E2=80=94</span></div><div cl=
+ass=3D"slot"><b>BANK 17</b><span style=3D"color:#b0a48e">=E2=80=94</span></=
+div><div class=3D"slot"><b>BANK 18</b><span style=3D"color:#b0a48e">=E2=80=
+=94</span></div><div class=3D"slot"><b>BANK 19</b><span style=3D"color:#b0a=
+48e">=E2=80=94</span></div><div class=3D"slot"><b>BANK 20</b><span style=3D=
+"color:#b0a48e">=E2=80=94</span></div><div class=3D"slot"><b>BANK 21</b><sp=
+an style=3D"color:#b0a48e">=E2=80=94</span></div><div class=3D"slot"><b>BAN=
+K 22</b><span style=3D"color:#b0a48e">=E2=80=94</span></div><div class=3D"s=
+lot"><b>BANK 23</b><span style=3D"color:#b0a48e">=E2=80=94</span></div><div=
+ class=3D"slot"><b>BANK 24</b><span style=3D"color:#b0a48e">=E2=80=94</span=
+></div></div></div>
+</section>
+
+<section>
+  <details>
+    <summary>USB Traffic Log</summary>
+    <div id=3D"log"></div>
+  </details>
+</section>
+
+</div>
+
+<dialog id=3D"saveDlg">
+  <h3>Save to amp memory</h3>
+  <div style=3D"font-size:12px;color:var(--walnut)">This overwrites the cho=
+sen bank on the amp.</div>
+  <label style=3D"font-size:11px;font-weight:700">BANK</label>
+  <select id=3D"slotSel"></select>
+  <label style=3D"font-size:11px;font-weight:700">NAME (max 32 chars)</labe=
+l>
+  <input id=3D"slotName" maxlength=3D"32">
+  <div style=3D"display:flex;gap:10px;justify-content:flex-end">
+    <button class=3D"ghost" id=3D"dlgCancel">Cancel</button>
+    <button id=3D"dlgSave">Save to Amp</button>
+  </div>
+</dialog>
+
+<div class=3D"toast" id=3D"toast"></div>
+
+
+
+
+</body></html>
+------MultipartBoundary--bYQ3sFV1RwTrSLhi4JBbCHYa3WpAJiBFIIuX1s6mTu----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;700&display=swap
+
+@charset "utf-8";
+
+@font-face { font-family: Fraunces; font-style: normal; font-weight: 400; f=
+ont-display: swap; src: url("https://fonts.gstatic.com/s/fraunces/v38/6NU78=
+FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0KxCBTeP2Xz5fU8w.woff2") forma=
+t("woff2"); unicode-range: U+102-103, U+110-111, U+128-129, U+168-169, U+1A=
+0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+323, U+329, U+1EA0-1EF=
+9, U+20AB; }
+
+@font-face { font-family: Fraunces; font-style: normal; font-weight: 400; f=
+ont-display: swap; src: url("https://fonts.gstatic.com/s/fraunces/v38/6NU78=
+FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0KxCFTeP2Xz5fU8w.woff2") forma=
+t("woff2"); unicode-range: U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2D=
+D-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, =
+U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+@font-face { font-family: Fraunces; font-style: normal; font-weight: 400; f=
+ont-display: swap; src: url("https://fonts.gstatic.com/s/fraunces/v38/6NU78=
+FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0KxC9TeP2Xz5c.woff2") format("=
+woff2"); unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, =
+U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+=
+2212, U+2215, U+FEFF, U+FFFD; }
+
+@font-face { font-family: Fraunces; font-style: normal; font-weight: 600; f=
+ont-display: swap; src: url("https://fonts.gstatic.com/s/fraunces/v38/6NU78=
+FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0KxCBTeP2Xz5fU8w.woff2") forma=
+t("woff2"); unicode-range: U+102-103, U+110-111, U+128-129, U+168-169, U+1A=
+0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+323, U+329, U+1EA0-1EF=
+9, U+20AB; }
+
+@font-face { font-family: Fraunces; font-style: normal; font-weight: 600; f=
+ont-display: swap; src: url("https://fonts.gstatic.com/s/fraunces/v38/6NU78=
+FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0KxCFTeP2Xz5fU8w.woff2") forma=
+t("woff2"); unicode-range: U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2D=
+D-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, =
+U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+@font-face { font-family: Fraunces; font-style: normal; font-weight: 600; f=
+ont-display: swap; src: url("https://fonts.gstatic.com/s/fraunces/v38/6NU78=
+FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0KxC9TeP2Xz5c.woff2") format("=
+woff2"); unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, =
+U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+=
+2212, U+2215, U+FEFF, U+FFFD; }
+
+@font-face { font-family: Fraunces; font-style: normal; font-weight: 700; f=
+ont-display: swap; src: url("https://fonts.gstatic.com/s/fraunces/v38/6NU78=
+FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0KxCBTeP2Xz5fU8w.woff2") forma=
+t("woff2"); unicode-range: U+102-103, U+110-111, U+128-129, U+168-169, U+1A=
+0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+323, U+329, U+1EA0-1EF=
+9, U+20AB; }
+
+@font-face { font-family: Fraunces; font-style: normal; font-weight: 700; f=
+ont-display: swap; src: url("https://fonts.gstatic.com/s/fraunces/v38/6NU78=
+FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0KxCFTeP2Xz5fU8w.woff2") forma=
+t("woff2"); unicode-range: U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2D=
+D-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, =
+U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+@font-face { font-family: Fraunces; font-style: normal; font-weight: 700; f=
+ont-display: swap; src: url("https://fonts.gstatic.com/s/fraunces/v38/6NU78=
+FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0KxC9TeP2Xz5c.woff2") format("=
+woff2"); unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, =
+U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+=
+2212, U+2215, U+FEFF, U+FFFD; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 400; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+460-52F, U+1C80-1C8A, U+2=
+0B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 400; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+301, U+400-45F, U+490-491=
+, U+4B0-4B1, U+2116; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 400; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+370-377, U+37A-37F, U+384=
+-38A, U+38C, U+38E-3A1, U+3A3-3FF; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 400; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+102-103, U+110-111, U+128=
+-129, U+168-169, U+1A0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+3=
+23, U+329, U+1EA0-1EF9, U+20AB; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 400; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+100-2BA, U+2BD-2C5, U+2C7=
+-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, =
+U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-=
+A7FF; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 400; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgk=
+nk-4.woff2") format("woff2"); unicode-range: U+0-FF, U+131, U+152-153, U+2B=
+B-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+212=
+2, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 500; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+460-52F, U+1C80-1C8A, U+2=
+0B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 500; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+301, U+400-45F, U+490-491=
+, U+4B0-4B1, U+2116; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 500; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+370-377, U+37A-37F, U+384=
+-38A, U+38C, U+38E-3A1, U+3A3-3FF; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 500; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+102-103, U+110-111, U+128=
+-129, U+168-169, U+1A0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+3=
+23, U+329, U+1EA0-1EF9, U+20AB; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 500; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+100-2BA, U+2BD-2C5, U+2C7=
+-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, =
+U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-=
+A7FF; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 500; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgk=
+nk-4.woff2") format("woff2"); unicode-range: U+0-FF, U+131, U+152-153, U+2B=
+B-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+212=
+2, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 700; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+460-52F, U+1C80-1C8A, U+2=
+0B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 700; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+301, U+400-45F, U+490-491=
+, U+4B0-4B1, U+2116; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 700; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+370-377, U+37A-37F, U+384=
+-38A, U+38C, U+38E-3A1, U+3A3-3FF; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 700; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+102-103, U+110-111, U+128=
+-129, U+168-169, U+1A0-1A1, U+1AF-1B0, U+300-301, U+303-304, U+308-309, U+3=
+23, U+329, U+1EA0-1EF9, U+20AB; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 700; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgk=
+nk-6nFg.woff2") format("woff2"); unicode-range: U+100-2BA, U+2BD-2C5, U+2C7=
+-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, =
+U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-=
+A7FF; }
+
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight=
+: 700; font-display: swap; src: url("https://fonts.gstatic.com/s/jetbrainsm=
+ono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgk=
+nk-4.woff2") format("woff2"); unicode-range: U+0-FF, U+131, U+152-153, U+2B=
+B-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+212=
+2, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+------MultipartBoundary--bYQ3sFV1RwTrSLhi4JBbCHYa3WpAJiBFIIuX1s6mTu----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: cid:css-e3874b1f-14cb-420d-963e-84cabb65aa57@mhtml.blink
+
+@charset "utf-8";
+
+:root { --cream: #f4ede0; --ink: #2b2118; --orange: #c2410c; --orange-soft:=
+ #fed7aa; --walnut: #5b4636; --panel: #efe5d3; --line: #d8cbb4; --ok: #3f62=
+12; --err: #b91c1c; --mono: 'JetBrains Mono',monospace; --serif: 'Fraunces'=
+,serif; }
+
+* { box-sizing: border-box; margin: 0px; padding: 0px; }
+
+body { background: var(--cream); color: var(--ink); font-family: var(--mono=
+); font-size: 14px; line-height: 1.5; }
+
+.wrap { max-width: 960px; margin: 0px auto; padding: 24px 20px 80px; }
+
+header { background: linear-gradient(rgb(58, 45, 34), rgb(43, 33, 24)); bor=
+der-radius: 14px; padding: 22px 24px; color: var(--cream); display: flex; a=
+lign-items: center; gap: 18px; flex-wrap: wrap; box-shadow: rgb(28, 21, 14)=
+ 0px 4px 0px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset; }
+
+header h1 { font-family: var(--serif); font-weight: 700; font-size: 26px; l=
+etter-spacing: 0.5px; }
+
+header .sub { font-size: 11px; opacity: 0.65; letter-spacing: 0.12em; text-=
+transform: uppercase; }
+
+.jewel { width: 16px; height: 16px; border-radius: 50%; background: rgb(90,=
+ 16, 16); box-shadow: rgba(0, 0, 0, 0.6) 0px -2px 4px inset, rgb(28, 21, 14=
+) 0px 0px 0px 3px; flex: 0 0 auto; transition: 0.3s; }
+
+.jewel.on { background: rgb(255, 90, 31); box-shadow: rgba(0, 0, 0, 0.3) 0p=
+x -2px 4px inset, rgba(255, 90, 31, 0.7) 0px 0px 14px 3px, rgb(28, 21, 14) =
+0px 0px 0px 3px; }
+
+.spacer { flex: 1 1 0%; }
+
+button { font-family: var(--mono); font-weight: 700; font-size: 13px; curso=
+r: pointer; border: 2px solid var(--ink); border-radius: 8px; padding: 9px =
+16px; background: var(--orange); color: rgb(255, 255, 255); box-shadow: 0 3=
+px 0 var(--ink); transition: transform 0.05s; }
+
+button:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink);=
+ }
+
+button.ghost { background: var(--panel); color: var(--ink); }
+
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+button.small { padding: 5px 10px; font-size: 11px; box-shadow: 0 2px 0 var(=
+--ink); }
+
+section { margin-top: 26px; }
+
+h2 { font-family: var(--serif); font-size: 19px; font-weight: 600; margin-b=
+ottom: 4px; }
+
+.hint { font-size: 12px; color: var(--walnut); margin-bottom: 12px; }
+
+.card { background: var(--panel); border: 1.5px solid var(--line); border-r=
+adius: 12px; padding: 16px; }
+
+#drop { border: 2px dashed var(--walnut); border-radius: 12px; padding: 26p=
+x; text-align: center; color: var(--walnut); cursor: pointer; transition: b=
+ackground 0.15s; }
+
+#drop.over { background: var(--orange-soft); }
+
+#drop b { color: var(--orange); }
+
+#search { width: 100%; font-family: var(--mono); font-size: 13px; padding: =
+9px 12px; border: 1.5px solid var(--line); border-radius: 8px; background: =
+rgb(255, 255, 255); margin-bottom: 10px; }
+
+.preset { display: flex; align-items: center; gap: 12px; padding: 10px 12px=
+; background: rgb(255, 255, 255); border: 1.5px solid var(--line); border-r=
+adius: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+
+.preset .name { font-weight: 700; font-size: 14px; }
+
+.preset .meta { font-size: 11px; color: var(--walnut); }
+
+.preset .grow { flex: 1 1 0%; min-width: 140px; }
+
+.badge { font-size: 10px; background: var(--orange-soft); color: var(--oran=
+ge); border-radius: 5px; padding: 2px 7px; font-weight: 700; letter-spacing=
+: 0.04em; }
+
+#slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(150=
+px, 1fr)); gap: 8px; }
+
+.slot { background: rgb(255, 255, 255); border: 1.5px solid var(--line); bo=
+rder-radius: 8px; padding: 8px 10px; font-size: 12px; }
+
+.slot b { color: var(--orange); font-size: 10px; display: block; }
+
+dialog { border: 2px solid var(--ink); border-radius: 14px; padding: 22px; =
+background: var(--cream); max-width: 420px; width: 92%; font-family: var(--=
+mono); }
+
+dialog::backdrop { background: rgba(43, 33, 24, 0.55); }
+
+dialog h3 { font-family: var(--serif); margin-bottom: 10px; }
+
+dialog select, dialog input { width: 100%; font-family: var(--mono); paddin=
+g: 8px; margin: 6px 0px 14px; border: 1.5px solid var(--line); border-radiu=
+s: 8px; background: rgb(255, 255, 255); font-size: 13px; }
+
+#log { background: rgb(28, 21, 14); color: rgb(232, 221, 200); border-radiu=
+s: 10px; padding: 12px 14px; font-size: 11px; max-height: 220px; overflow: =
+auto; white-space: pre-wrap; word-break: break-all; }
+
+#log .tx { color: rgb(253, 186, 116); }
+
+#log .rx { color: rgb(163, 230, 53); }
+
+#log .err { color: rgb(248, 113, 113); }
+
+#log .ok { color: rgb(134, 239, 172); }
+
+details summary { cursor: pointer; font-weight: 700; font-size: 13px; margi=
+n-bottom: 8px; }
+
+.callout { background: var(--orange-soft); border-left: 4px solid var(--ora=
+nge); border-radius: 0px 8px 8px 0px; padding: 12px 14px; font-size: 12.5px=
+; margin-top: 12px; }
+
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-5=
+0%); background: var(--ink); color: var(--cream); padding: 10px 18px; borde=
+r-radius: 10px; font-size: 13px; opacity: 0; transition: opacity 0.25s; poi=
+nter-events: none; z-index: 99; }
+
+.toast.show { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+------MultipartBoundary--bYQ3sFV1RwTrSLhi4JBbCHYa3WpAJiBFIIuX1s6mTu------
