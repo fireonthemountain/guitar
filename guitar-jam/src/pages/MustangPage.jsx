@@ -5,7 +5,7 @@ import {
   pktInit, pktRequestState, pktExecute, pktSelectBank, pktSaveName,
   pktAmp, pktUsbGain, pktEffect, parseFuse, toFuseXml,
 } from '../utils/mustangProtocol';
-import { loadBundledPresets, loadCommunityPresets } from '../data/mustangPresets';
+import { loadBundledPresets, loadCommunityPresets, loadCuratedPresets } from '../data/mustangPresets';
 
 const LIB_KEY = 'guitar-jam-mustang-lib';
 const RENDER_CAP = 300; // cap visible rows; the community set is ~1,100 presets
@@ -194,9 +194,15 @@ export default function MustangPage() {
 
   const bundled = useMemo(() => loadBundledPresets(), []);
   const [community, setCommunity] = useState([]);
+  const [curated, setCurated] = useState([]);
   const showToast = useCallback((m) => { setToast(m); setTimeout(() => setToast(''), 2600); }, []);
 
-  useEffect(() => { let live = true; loadCommunityPresets().then((c) => { if (live) setCommunity(c); }).catch(() => {}); return () => { live = false; }; }, []);
+  useEffect(() => {
+    let live = true;
+    loadCommunityPresets().then((c) => { if (live) setCommunity(c); }).catch(() => {});
+    loadCuratedPresets().then((c) => { if (live) setCurated(c); }).catch(() => {});
+    return () => { live = false; };
+  }, []);
 
   useEffect(() => {
     try { localStorage.setItem(LIB_KEY, JSON.stringify(imported)); } catch (_) { /* ignore */ }
@@ -210,21 +216,26 @@ export default function MustangPage() {
   }, [imported, bundled, community]);
 
   const filtered = useMemo(() => {
+    // "Curated" is a separate lens over the community set, not part of "All"
+    const base = sourceFilter === 'curated'
+      ? curated
+      : library.filter((p) => sourceFilter === 'all' || p.source === sourceFilter);
     const q = query.toLowerCase();
-    return library.filter((p) => {
-      if (sourceFilter !== 'all' && p.source !== sourceFilter) return false;
-      if (!q) return true;
-      return p.name.toLowerCase().includes(q) || (AMPS[p.amp.model]?.name || '').toLowerCase().includes(q);
-    });
-  }, [library, query, sourceFilter]);
+    if (!q) return base;
+    return base.filter((p) =>
+      p.name.toLowerCase().includes(q)
+      || (AMPS[p.amp.model]?.name || '').toLowerCase().includes(q)
+      || (p.tag || '').toLowerCase().includes(q));
+  }, [library, curated, query, sourceFilter]);
 
   const counts = useMemo(() => ({
     all: library.length,
     'blues-jam-picks': library.filter((p) => p.source === 'blues-jam-picks').length,
     'full-collection': library.filter((p) => p.source === 'full-collection').length,
+    curated: curated.length,
     'fuse-community': community.length,
     imported: imported.length,
-  }), [library, community, imported]);
+  }), [library, curated, community, imported]);
 
   const importFiles = useCallback(async (files) => {
     let ok = 0, fail = 0;
@@ -264,6 +275,7 @@ export default function MustangPage() {
 
   const FILTERS = [
     ['all', 'All'],
+    ['curated', 'Curated'],
     ['blues-jam-picks', 'Blues Jam'],
     ['full-collection', 'Full Collection'],
     ['fuse-community', 'Community'],
@@ -339,8 +351,9 @@ export default function MustangPage() {
                     {open ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                   </button>
                   <div className="flex-1 min-w-[160px] cursor-pointer" onClick={toggle}>
-                    <div className="text-white font-bold text-sm flex items-center gap-2">
+                    <div className="text-white font-bold text-sm flex items-center gap-2 flex-wrap">
                       {p.name}
+                      {p.tag && <span className="text-[9px] bg-teal-900/50 text-teal-300 rounded px-1.5 py-0.5 font-bold tracking-wide">{p.tag}</span>}
                       {isV2(p) && <span className="text-[9px] bg-orange-900/40 text-orange-300 rounded px-1.5 py-0.5 font-bold tracking-wide">V2 MODELS</span>}
                     </div>
                     <div className="text-gray-400 text-[11px]">{AMPS[p.amp.model]?.name} · {fxNames(p)} <span className="text-gray-600">· {p.sourceLabel}</span></div>

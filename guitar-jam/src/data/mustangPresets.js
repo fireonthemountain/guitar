@@ -55,3 +55,13 @@ export async function loadCommunityPresets() {
     ...p, source: 'fuse-community', sourceLabel: 'Community', bundled: true,
   }));
 }
+
+/* A hand-tuned lens over the community backup: near-duplicate variants
+   collapsed, junk names dropped, and each preset tagged by artist or genre.
+   ~280 "greatest hits" — the browsable cream of the 1,107. */
+export async function loadCuratedPresets() {
+  const mod = await import('./curatedPresets.json');
+  return mod.default.map((p) => ({
+    ...p, source: 'curated', sourceLabel: 'Curated', bundled: true,
+  }));
+}
