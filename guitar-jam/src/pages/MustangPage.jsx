@@ -14,40 +14,71 @@ const fxNames = (p) => p.effects.map((f) => FX[f.model]?.n).filter(Boolean).join
 const isV2 = (p) => AMPS[p.amp.model]?.v2 || p.effects.some((f) => FX[f.model]?.v2);
 const to10 = (b) => (Math.round((b / 255) * 100) / 10).toFixed(1); // amp byte 0–255 → 0.0–10.0
 const DSP_LABEL = { 6: 'Stomp', 7: 'Mod', 8: 'Delay', 9: 'Reverb' };
+const DSP_STYLE = {
+  6: 'bg-amber-900/40 text-amber-200 border-amber-700/40',
+  7: 'bg-sky-900/40 text-sky-200 border-sky-700/40',
+  8: 'bg-blue-900/40 text-blue-200 border-blue-700/40',
+  9: 'bg-purple-900/40 text-purple-200 border-purple-700/40',
+};
 
-/* A single labelled 0–10 knob bar */
+/* A rotary amp knob: tick-mark dial, cream pointer, orange value arc.
+   `value` is a 0–255 amp byte, mapped across a 270° sweep. */
 function Knob({ label, value }) {
-  const pct = Math.max(0, Math.min(100, (value / 255) * 100));
+  const C = 28;
+  const pol = (r, deg) => { const a = (deg * Math.PI) / 180; return [C + r * Math.sin(a), C - r * Math.cos(a)]; };
+  const frac = Math.max(0, Math.min(1, value / 255));
+  const ang = -135 + frac * 270;
+  const ticks = [];
+  for (let t = 0; t <= 10; t++) {
+    const d = -135 + t * 27; const maj = t % 5 === 0;
+    const [x1, y1] = pol(maj ? 18.5 : 20, d); const [x2, y2] = pol(23.5, d);
+    ticks.push(<line key={t} x1={x1.toFixed(1)} y1={y1.toFixed(1)} x2={x2.toFixed(1)} y2={y2.toFixed(1)} stroke={maj ? '#9ca3af' : '#4b5563'} strokeWidth={maj ? 1.6 : 1} />);
+  }
+  const [sx, sy] = pol(23.5, -135);
+  const [ex, ey] = pol(23.5, ang);
+  const large = frac * 270 > 180 ? 1 : 0;
+  const [tx, ty] = pol(15, ang); const [bx, by] = pol(3, ang);
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-[10px] uppercase tracking-wide text-gray-500 w-14 flex-none">{label}</span>
-      <div className="flex-1 h-1.5 bg-gray-700 rounded-full overflow-hidden"><div className="h-full bg-teal-500" style={{ width: `${pct}%` }} /></div>
-      <span className="text-[10px] text-gray-400 w-7 text-right tabular-nums">{to10(value)}</span>
+    <div className="text-center" style={{ flex: 1, minWidth: 46 }}>
+      <svg width="54" height="54" viewBox="0 0 56 56" className="mx-auto block">
+        {ticks}
+        {frac > 0.001 && <path d={`M${sx.toFixed(1)} ${sy.toFixed(1)} A23.5 23.5 0 ${large} 1 ${ex.toFixed(1)} ${ey.toFixed(1)}`} fill="none" stroke="#f97316" strokeWidth="2.5" strokeLinecap="round" />}
+        <circle cx="28" cy="28" r="16" fill="#242320" stroke="rgba(255,255,255,.14)" strokeWidth="1" />
+        <circle cx="28" cy="28" r="10.5" fill="#332f2b" />
+        <line x1={bx.toFixed(1)} y1={by.toFixed(1)} x2={tx.toFixed(1)} y2={ty.toFixed(1)} stroke="#f4ede0" strokeWidth="2.6" strokeLinecap="round" />
+        <circle cx="28" cy="28" r="2.4" fill="#4a4038" />
+      </svg>
+      <div className="text-[10px] text-gray-500 -mt-0.5">{label}</div>
+      <div className="text-[11px] text-gray-300 font-medium tabular-nums">{to10(value)}</div>
     </div>
   );
 }
 
-/* Expandable per-preset detail: amp knobs + each effect's settings */
+/* Expandable per-preset detail: rotary amp panel + a left-to-right signal chain */
 function PresetDetails({ p }) {
   const a = p.amp;
   const ampKnobs = [
-    ['Gain', a.gain], ['Volume', a.volume], ['Treble', a.treble], ['Middle', a.middle],
+    ['Gain', a.gain], ['Vol', a.volume], ['Treble', a.treble], ['Middle', a.middle],
     ['Bass', a.bass], ['Presence', a.presence], ['Master', a.master],
   ];
+  const chain = [6, 7, 8, 9].map((dsp) => p.effects.find((f) => f.dsp === dsp)).filter(Boolean);
   return (
-    <div className="grid gap-4 sm:grid-cols-2 bg-gray-900/60 border border-gray-700 rounded-xl px-4 py-3">
+    <div className="bg-gray-900/60 border border-gray-700 rounded-xl px-4 py-3 space-y-3">
       <div>
-        <div className="text-[10px] uppercase tracking-wide text-orange-400 font-bold mb-2">Amp · {AMPS[a.model]?.name}</div>
-        <div className="space-y-1.5">{ampKnobs.map(([l, v]) => <Knob key={l} label={l} value={v} />)}</div>
+        <div className="text-[10px] uppercase tracking-wide text-orange-400 font-bold mb-1">Amp · {AMPS[a.model]?.name}</div>
+        <div className="flex gap-1 justify-between flex-wrap">{ampKnobs.map(([l, v]) => <Knob key={l} label={l} value={v} />)}</div>
       </div>
       <div>
-        <div className="text-[10px] uppercase tracking-wide text-orange-400 font-bold mb-2">Effects</div>
-        {p.effects.length === 0 ? <div className="text-gray-500 text-xs">No effects.</div> : (
-          <div className="space-y-2.5">
-            {p.effects.map((f, i) => (
-              <div key={i}>
-                <div className="text-xs text-gray-200 font-semibold">{FX[f.model]?.n || `Unknown 0x${f.model.toString(16)}`} <span className="text-gray-500 font-normal">· {DSP_LABEL[f.dsp]}</span></div>
-                <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-1">{f.knobs.slice(0, 6).map((k, ki) => <Knob key={ki} label={`K${ki + 1}`} value={k} />)}</div>
+        <div className="text-[10px] uppercase tracking-wide text-orange-400 font-bold mb-1.5">Signal chain</div>
+        {chain.length === 0 ? <div className="text-gray-500 text-xs">Clean — no effects.</div> : (
+          <div className="flex items-center gap-2 flex-wrap">
+            {chain.map((f, i) => (
+              <div key={i} className="flex items-center gap-2">
+                {i > 0 && <ChevronRight size={14} className="text-gray-600" />}
+                <div className={`border rounded-lg px-2.5 py-1.5 ${DSP_STYLE[f.dsp]}`}>
+                  <div className="text-xs font-semibold">{FX[f.model]?.n || `0x${f.model.toString(16)}`} <span className="opacity-60 font-normal">· {DSP_LABEL[f.dsp]}</span></div>
+                  <div className="text-[9px] opacity-70 tabular-nums mt-0.5">{f.knobs.slice(0, 6).map((k) => to10(k)).join(' · ')}</div>
+                </div>
               </div>
             ))}
           </div>
@@ -237,6 +268,12 @@ export default function MustangPage() {
     imported: imported.length,
   }), [library, curated, community, imported]);
 
+  const tagChips = useMemo(() => {
+    const c = {};
+    curated.forEach((p) => { if (p.tag) c[p.tag] = (c[p.tag] || 0) + 1; });
+    return Object.entries(c).sort((x, y) => y[1] - x[1]).slice(0, 12);
+  }, [curated]);
+
   const importFiles = useCallback(async (files) => {
     let ok = 0, fail = 0;
     const next = [];
@@ -335,6 +372,17 @@ export default function MustangPage() {
             </button>
           ))}
         </div>
+
+        {sourceFilter === 'curated' && tagChips.length > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5 mt-2">
+            <span className="text-[11px] text-gray-500">Browse:</span>
+            {tagChips.map(([tag, n]) => (
+              <button key={tag} onClick={() => setQuery(query === tag ? '' : tag)} className={`px-2 py-1 rounded-md text-[11px] ${query === tag ? 'bg-teal-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-gray-200'}`}>
+                {tag} <span className="opacity-60">{n}</span>
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="mt-3 space-y-2">
           {filtered.length === 0 && (
