@@ -5,9 +5,10 @@ import {
   pktInit, pktRequestState, pktExecute, pktSelectBank, pktSaveName,
   pktAmp, pktUsbGain, pktEffect, parseFuse, toFuseXml,
 } from '../utils/mustangProtocol';
-import { loadBundledPresets } from '../data/mustangPresets';
+import { loadBundledPresets, loadCommunityPresets } from '../data/mustangPresets';
 
 const LIB_KEY = 'guitar-jam-mustang-lib';
+const RENDER_CAP = 300; // cap visible rows; the community set is ~1,100 presets
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const fxNames = (p) => p.effects.map((f) => FX[f.model]?.n).filter(Boolean).join(', ') || 'no effects';
 const isV2 = (p) => AMPS[p.amp.model]?.v2 || p.effects.some((f) => FX[f.model]?.v2);
@@ -192,7 +193,10 @@ export default function MustangPage() {
   const logRef = useRef(null);
 
   const bundled = useMemo(() => loadBundledPresets(), []);
+  const [community, setCommunity] = useState([]);
   const showToast = useCallback((m) => { setToast(m); setTimeout(() => setToast(''), 2600); }, []);
+
+  useEffect(() => { let live = true; loadCommunityPresets().then((c) => { if (live) setCommunity(c); }).catch(() => {}); return () => { live = false; }; }, []);
 
   useEffect(() => {
     try { localStorage.setItem(LIB_KEY, JSON.stringify(imported)); } catch (_) { /* ignore */ }
@@ -202,8 +206,8 @@ export default function MustangPage() {
 
   const library = useMemo(() => {
     const imp = imported.map((p) => ({ ...p, source: 'imported', sourceLabel: 'Imported', bundled: false }));
-    return [...imp, ...bundled];
-  }, [imported, bundled]);
+    return [...imp, ...bundled, ...community];
+  }, [imported, bundled, community]);
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase();
@@ -218,8 +222,9 @@ export default function MustangPage() {
     all: library.length,
     'blues-jam-picks': library.filter((p) => p.source === 'blues-jam-picks').length,
     'full-collection': library.filter((p) => p.source === 'full-collection').length,
+    'fuse-community': community.length,
     imported: imported.length,
-  }), [library, imported]);
+  }), [library, community, imported]);
 
   const importFiles = useCallback(async (files) => {
     let ok = 0, fail = 0;
@@ -261,6 +266,7 @@ export default function MustangPage() {
     ['all', 'All'],
     ['blues-jam-picks', 'Blues Jam'],
     ['full-collection', 'Full Collection'],
+    ['fuse-community', 'Community'],
     ['imported', 'Imported'],
   ];
 
@@ -322,7 +328,7 @@ export default function MustangPage() {
           {filtered.length === 0 && (
             <div className="text-gray-500 text-sm px-1 py-2">No matches.</div>
           )}
-          {filtered.map((p, i) => {
+          {filtered.slice(0, RENDER_CAP).map((p, i) => {
             const key = `${p.source}-${p.name}-${i}`;
             const open = expanded === key;
             const toggle = () => setExpanded(open ? null : key);
@@ -350,6 +356,9 @@ export default function MustangPage() {
               </div>
             );
           })}
+          {filtered.length > RENDER_CAP && (
+            <div className="text-gray-500 text-xs px-1 py-2">Showing {RENDER_CAP} of {filtered.length} — refine your search to narrow the list.</div>
+          )}
         </div>
       </section>
 

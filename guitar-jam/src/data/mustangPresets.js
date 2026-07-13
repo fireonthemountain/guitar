@@ -42,3 +42,16 @@ export function loadBundledPresets() {
 }
 
 export const BUNDLED_SOURCES = SOURCE_LABELS;
+
+/* The Fender FUSE community backup (2017 snapshot of the discontinued FUSE
+   cloud): 1,333 .fuse files → 1,107 unique presets after de-duping, pre-parsed
+   to compact JSON at prep time (mirrors parseFuse). Source archive:
+   dan-r95.github.io/misc/2020/04/14/fuse.html (Google Drive backup).
+   Lazy-loaded (dynamic import → its own chunk) so it only costs the Amp tab,
+   not the initial app load. */
+export async function loadCommunityPresets() {
+  const mod = await import('./communityPresets.json');
+  return mod.default.map((p) => ({
+    ...p, source: 'fuse-community', sourceLabel: 'Community', bundled: true,
+  }));
+}
