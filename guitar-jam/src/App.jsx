@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 import DeadProgramPage from './pages/DeadProgramPage';
 import SongbookPage from './pages/SongbookPage';
+import MustangPage from './pages/MustangPage';
 import { getMasterVolume, setMasterVolume, armAudioUnlock } from './utils/audioEngine';
 
 const VIEWS = [
   { id: 'program', label: '90-Day Program' },
   { id: 'songbook', label: 'Songbook' },
+  { id: 'amp', label: 'Amp' },
 ];
 
 function VolumeControl() {
@@ -25,7 +27,7 @@ function VolumeControl() {
 export default function App() {
   const [view, setView] = useState(() => {
     const q = new URLSearchParams(window.location.search).get('view');
-    if (q === 'program' || q === 'songbook') return q;
+    if (VIEWS.some((v) => v.id === q)) return q;
     return localStorage.getItem('guitar-jam-view') || 'program';
   });
   const pick = (id) => { setView(id); localStorage.setItem('guitar-jam-view', id); };
@@ -57,7 +59,9 @@ export default function App() {
       </header>
 
       <main className="max-w-[1600px] mx-auto px-5 py-6">
-        {view === 'program' ? <DeadProgramPage /> : <SongbookPage />}
+        {view === 'program' && <DeadProgramPage />}
+        {view === 'songbook' && <SongbookPage />}
+        {view === 'amp' && <MustangPage />}
       </main>
     </div>
   );
