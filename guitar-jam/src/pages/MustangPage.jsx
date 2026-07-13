@@ -297,9 +297,10 @@ export default function MustangPage() {
   const preview = useCallback((p, key) => {
     if (previewTimer.current) clearTimeout(previewTimer.current);
     if (playingKey === key) { stopPreview(); setPlayingKey(null); return; }
-    const dur = previewPreset(p);
     setPlayingKey(key);
-    previewTimer.current = setTimeout(() => setPlayingKey(null), dur * 1000 + 500);
+    previewPreset(p)
+      .then((dur) => { previewTimer.current = setTimeout(() => setPlayingKey(null), dur * 1000 + 500); })
+      .catch(() => setPlayingKey(null));
   }, [playingKey]);
 
   useEffect(() => () => { stopPreview(); if (previewTimer.current) clearTimeout(previewTimer.current); }, []);
