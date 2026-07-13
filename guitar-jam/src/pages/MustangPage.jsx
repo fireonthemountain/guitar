@@ -6,7 +6,7 @@ import {
   pktAmp, pktUsbGain, pktEffect, parseFuse, toFuseXml,
 } from '../utils/mustangProtocol';
 import { loadBundledPresets, loadCommunityPresets, loadCuratedPresets } from '../data/mustangPresets';
-import { previewPreset, stopPreview } from '../utils/mustangPreview';
+import { previewPreset, stopPreview, previewStyle } from '../utils/mustangPreview';
 
 const LIB_KEY = 'guitar-jam-mustang-lib';
 const RENDER_CAP = 300; // cap visible rows; the community set is ~1,100 presets
@@ -420,7 +420,7 @@ export default function MustangPage() {
                     </div>
                     <div className="text-gray-400 text-[11px]">{AMPS[p.amp.model]?.name} · {fxNames(p)} <span className="text-gray-600">· {p.sourceLabel}</span></div>
                   </div>
-                  <button onClick={() => preview(p, key)} title="Preview tone (browser approximation)" aria-label="Preview tone" className={`flex items-center gap-1 text-xs font-semibold rounded-md px-2.5 py-1.5 ${playingKey === key ? 'bg-teal-600 text-white' : 'bg-gray-700 text-teal-300 hover:bg-gray-600'}`}>{playingKey === key ? <Square size={13} /> : <Play size={13} />}</button>
+                  <button onClick={() => preview(p, key)} title={`Preview — ${previewStyle(p)} (browser approximation)`} aria-label="Preview tone" className={`flex items-center gap-1 text-xs font-semibold rounded-md px-2.5 py-1.5 ${playingKey === key ? 'bg-teal-600 text-white' : 'bg-gray-700 text-teal-300 hover:bg-gray-600'}`}>{playingKey === key ? <Square size={13} /> : <Play size={13} />}</button>
                   <button onClick={() => onSend(p)} disabled={!amp.connected} title={amp.connected ? '' : 'Connect the amp first'} className="flex items-center gap-1 text-xs font-semibold bg-orange-600 text-white rounded-md px-2.5 py-1.5 hover:bg-orange-500 disabled:opacity-40 disabled:cursor-not-allowed"><Send size={13} />Send</button>
                   <button onClick={() => (amp.connected ? setSaveTarget(p) : showToast('Connect the amp first'))} disabled={!amp.connected} className="flex items-center gap-1 text-xs font-semibold bg-gray-700 text-gray-200 rounded-md px-2.5 py-1.5 hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"><Save size={13} />Bank…</button>
                   <button onClick={() => exportPreset(p)} className="flex items-center gap-1 text-xs font-semibold bg-gray-700 text-gray-200 rounded-md px-2.5 py-1.5 hover:bg-gray-600"><Download size={13} />Export</button>

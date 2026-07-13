@@ -13,11 +13,94 @@ import { getAudioCtx, getMaster } from './audioEngine';
 const n = (b) => Math.max(0, Math.min(1, (b || 0) / 255)); // 0–255 byte → 0–1
 const BASE = import.meta.env.BASE_URL || '/';
 const NOTE_FILE = { 40: 'E2', 47: 'B2', 52: 'E3', 55: 'G3', 57: 'A3', 59: 'B3' };
-const PHRASE = [
-  [40, 0.00, 1.9], [47, 0.04, 1.9], [52, 0.08, 1.9],
-  [52, 0.95, 0.30], [55, 1.22, 0.30], [57, 1.48, 0.32], [59, 1.74, 0.62],
-  [40, 2.45, 1.6], [47, 2.49, 1.6], [52, 2.53, 1.6],
-];
+
+// Style-matched demo phrases, all in E so they work with the 6 sampled notes.
+// Each: { dur (total s), attack (s), notes: [midi, start, dur] }
+const PHRASES = {
+  rock: { dur: 3.9, attack: 0.005, notes: [
+    [40, 0, 0.6], [47, 0.03, 0.6], [52, 0.06, 0.6],
+    [40, 0.75, 0.5], [47, 0.78, 0.5], [52, 0.81, 0.5],
+    [40, 1.45, 0.8], [47, 1.48, 0.8], [52, 1.51, 0.8],
+    [40, 2.4, 1.3], [47, 2.43, 1.3], [52, 2.46, 1.3],
+  ] },
+  metal: { dur: 3.5, attack: 0.004, notes: [
+    [40, 0.00, 0.12], [40, 0.16, 0.10], [40, 0.28, 0.10],
+    [40, 0.44, 0.12], [40, 0.60, 0.10], [40, 0.72, 0.10],
+    [40, 0.90, 0.30], [47, 0.90, 0.30],
+    [40, 1.25, 0.12], [40, 1.41, 0.10], [40, 1.53, 0.10],
+    [40, 1.70, 0.12], [40, 1.86, 0.10],
+    [40, 2.05, 0.6], [47, 2.05, 0.6], [52, 2.05, 0.6],
+    [40, 2.85, 0.12], [40, 3.01, 0.10], [40, 3.13, 0.4], [47, 3.13, 0.4],
+  ] },
+  blues: { dur: 3.9, attack: 0.005, notes: [
+    [59, 0.00, 0.30], [57, 0.28, 0.28], [55, 0.54, 0.30], [52, 0.84, 0.55],
+    [52, 1.45, 0.28], [55, 1.72, 0.28], [57, 1.98, 0.5],
+    [59, 2.45, 1.4],
+  ] },
+  lead: { dur: 4.3, attack: 0.02, notes: [
+    [55, 0.00, 0.9], [57, 0.88, 0.7], [59, 1.55, 1.7], [57, 3.25, 1.0],
+  ] },
+  clean: { dur: 3.9, attack: 0.02, notes: [
+    [40, 0.00, 2.2], [47, 0.35, 2.0], [52, 0.70, 1.8], [55, 1.05, 1.6],
+    [59, 1.45, 1.7], [55, 1.9, 1.3], [52, 2.3, 1.6],
+  ] },
+  funk: { dur: 2.9, attack: 0.004, notes: [
+    [52, 0.00, 0.09], [55, 0.00, 0.09], [59, 0.00, 0.09],
+    [52, 0.36, 0.09], [55, 0.36, 0.09], [59, 0.36, 0.09],
+    [52, 0.54, 0.09], [55, 0.54, 0.09],
+    [52, 0.90, 0.09], [55, 0.90, 0.09], [59, 0.90, 0.09],
+    [52, 1.26, 0.09], [55, 1.26, 0.09], [59, 1.26, 0.09],
+    [52, 1.44, 0.09], [55, 1.44, 0.09],
+    [52, 1.80, 0.12], [55, 1.80, 0.12], [59, 1.80, 0.12],
+    [52, 2.16, 0.35], [55, 2.16, 0.35], [59, 2.16, 0.35],
+  ] },
+  acoustic: { dur: 3.9, attack: 0.005, notes: [
+    [40, 0.00, 1.5], [47, 0.04, 1.5], [52, 0.08, 1.5], [55, 0.12, 1.5], [59, 0.16, 1.5],
+    [59, 0.85, 1.0], [55, 0.90, 1.0], [52, 0.95, 1.0],
+    [40, 1.6, 2.0], [47, 1.64, 2.0], [52, 1.68, 2.0], [55, 1.72, 2.0], [59, 1.76, 2.0],
+  ] },
+  ambient: { dur: 4.2, attack: 0.6, notes: [
+    [40, 0.00, 3.8], [47, 0.10, 3.7], [52, 0.20, 3.6], [55, 0.30, 3.5], [59, 0.40, 3.4],
+  ] },
+};
+const STYLE_LABEL = {
+  rock: 'rock riff', metal: 'metal chug', blues: 'blues lick', lead: 'lead line',
+  clean: 'clean arpeggio', funk: 'funk stabs', acoustic: 'strummed chord', ambient: 'ambient swell',
+};
+
+// Pick a phrase style from the preset's tag, else infer from its amp + effects.
+function styleOf(p) {
+  const t = (p.tag || '').toLowerCase();
+  if (t) {
+    if (/metallica|pantera|slayer|megadeth|maiden|sabbath|iommi|dimebag/.test(t)) return 'metal';
+    if (/gilmour|floyd|hendrix|clapton|santana|beck|trower|gary moore|king|mayer|frusciante/.test(t)) return 'lead';
+    if (/knopfler|smiths|marr|u2|edge/.test(t)) return 'clean';
+    if (/ac\/dc|angus|van halen|zz top|guns|slash|setzer|rush|queen|may/.test(t)) return 'rock';
+    if (t === 'metal') return 'metal';
+    if (t === 'blues') return 'blues';
+    if (t === 'lead') return 'lead';
+    if (t === 'clean') return 'clean';
+    if (t === 'acoustic') return 'acoustic';
+    if (t === 'funk') return 'funk';
+    if (t.includes('ambient')) return 'ambient';
+    if (t.includes('fuzz')) return 'lead';
+    if (t.includes('crunch') || t.includes('rock')) return 'rock';
+  }
+  const m = p.amp.model;
+  const g = (p.amp.gain || 0) / 255;
+  const fx = {}; p.effects.forEach((f) => { fx[f.dsp] = f; });
+  const fuzz = fx[6] && [0x1a, 0x1c, 0x10f].includes(fx[6].model);
+  const bigVerb = fx[9] && [0x3a, 0x4c, 0x4d].includes(fx[9].model);
+  const clean = [0x67, 0x64, 0x7c, 0x53, 0x6a, 0x75, 0xf6].includes(m);
+  if (m === 0x6d || (g > 0.7 && m === 0x5d)) return 'metal';
+  if (fuzz) return 'lead';
+  if (clean && g < 0.4) return bigVerb ? 'ambient' : 'clean';
+  if (fx[8] && g < 0.7) return 'lead';
+  if (g > 0.55) return 'rock';
+  return 'blues';
+}
+
+export function previewStyle(p) { return STYLE_LABEL[styleOf(p)] || 'tone'; }
 
 // ── effect model id sets ────────────────────────────────────────────
 const OD = new Set([0x3c, 0xba, 0x110, 0x111]);   // overdrive-ish
@@ -207,18 +290,23 @@ export async function previewPreset(p) {
 
   out.connect(getMaster());
 
+  const phrase = PHRASES[styleOf(p)];
   const t0 = ctx.currentTime + 0.06;
   const srcs = [];
-  PHRASE.forEach(([midi, at, dur]) => {
+  phrase.notes.forEach(([midi, at, dur]) => {
     const buf = noteBufs[midi]; if (!buf) return;
     const s = ctx.createBufferSource(); s.buffer = buf;
     const g = ctx.createGain();
-    g.gain.setValueAtTime(1, t0 + at);
-    g.gain.setValueAtTime(1, t0 + at + dur - 0.06);
-    g.gain.exponentialRampToValueAtTime(0.001, t0 + at + dur);
-    s.connect(g); g.connect(input); s.start(t0 + at); s.stop(t0 + at + dur + 0.05);
+    const st = t0 + at;
+    const atk = Math.min(phrase.attack, dur * 0.5);
+    const hold = Math.max(st + atk, st + dur - 0.05);
+    g.gain.setValueAtTime(0.0001, st);
+    g.gain.exponentialRampToValueAtTime(1, st + atk);
+    g.gain.setValueAtTime(1, hold);
+    g.gain.exponentialRampToValueAtTime(0.001, st + dur);
+    s.connect(g); g.connect(input); s.start(st); s.stop(st + dur + 0.05);
     srcs.push(s);
   });
   active = { out, srcs };
-  return 4.3;
+  return phrase.dur;
 }
