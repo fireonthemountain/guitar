@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Plug, Upload, Send, Save, Download, X, Search, Radio } from 'lucide-react';
+import { Plug, Upload, Send, Save, Download, X, Search, Radio, ChevronRight, ChevronDown } from 'lucide-react';
 import {
   FENDER_VID, GEN1_PIDS, AMPS, FX, hex,
   pktInit, pktRequestState, pktExecute, pktSelectBank, pktSaveName,
@@ -11,6 +11,51 @@ const LIB_KEY = 'guitar-jam-mustang-lib';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const fxNames = (p) => p.effects.map((f) => FX[f.model]?.n).filter(Boolean).join(', ') || 'no effects';
 const isV2 = (p) => AMPS[p.amp.model]?.v2 || p.effects.some((f) => FX[f.model]?.v2);
+const to10 = (b) => (Math.round((b / 255) * 100) / 10).toFixed(1); // amp byte 0–255 → 0.0–10.0
+const DSP_LABEL = { 6: 'Stomp', 7: 'Mod', 8: 'Delay', 9: 'Reverb' };
+
+/* A single labelled 0–10 knob bar */
+function Knob({ label, value }) {
+  const pct = Math.max(0, Math.min(100, (value / 255) * 100));
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-[10px] uppercase tracking-wide text-gray-500 w-14 flex-none">{label}</span>
+      <div className="flex-1 h-1.5 bg-gray-700 rounded-full overflow-hidden"><div className="h-full bg-teal-500" style={{ width: `${pct}%` }} /></div>
+      <span className="text-[10px] text-gray-400 w-7 text-right tabular-nums">{to10(value)}</span>
+    </div>
+  );
+}
+
+/* Expandable per-preset detail: amp knobs + each effect's settings */
+function PresetDetails({ p }) {
+  const a = p.amp;
+  const ampKnobs = [
+    ['Gain', a.gain], ['Volume', a.volume], ['Treble', a.treble], ['Middle', a.middle],
+    ['Bass', a.bass], ['Presence', a.presence], ['Master', a.master],
+  ];
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 bg-gray-900/60 border border-gray-700 rounded-xl px-4 py-3">
+      <div>
+        <div className="text-[10px] uppercase tracking-wide text-orange-400 font-bold mb-2">Amp · {AMPS[a.model]?.name}</div>
+        <div className="space-y-1.5">{ampKnobs.map(([l, v]) => <Knob key={l} label={l} value={v} />)}</div>
+      </div>
+      <div>
+        <div className="text-[10px] uppercase tracking-wide text-orange-400 font-bold mb-2">Effects</div>
+        {p.effects.length === 0 ? <div className="text-gray-500 text-xs">No effects.</div> : (
+          <div className="space-y-2.5">
+            {p.effects.map((f, i) => (
+              <div key={i}>
+                <div className="text-xs text-gray-200 font-semibold">{FX[f.model]?.n || `Unknown 0x${f.model.toString(16)}`} <span className="text-gray-500 font-normal">· {DSP_LABEL[f.dsp]}</span></div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-1">{f.knobs.slice(0, 6).map((k, ki) => <Knob key={ki} label={`K${ki + 1}`} value={k} />)}</div>
+              </div>
+            ))}
+          </div>
+        )}
+        {p.usbGain != null && <div className="text-[11px] text-gray-500 mt-2">USB gain: {to10(p.usbGain)}</div>}
+      </div>
+    </div>
+  );
+}
 
 /* ── WebHID amp connection ──────────────────────────────────── */
 function useMustangAmp() {
@@ -139,6 +184,7 @@ export default function MustangPage() {
   });
   const [query, setQuery] = useState('');
   const [sourceFilter, setSourceFilter] = useState('all'); // all | blues-jam-picks | full-collection | imported
+  const [expanded, setExpanded] = useState(null); // key of the open preset
   const [saveTarget, setSaveTarget] = useState(null);
   const [toast, setToast] = useState('');
   const [dragOver, setDragOver] = useState(false);
@@ -276,23 +322,34 @@ export default function MustangPage() {
           {filtered.length === 0 && (
             <div className="text-gray-500 text-sm px-1 py-2">No matches.</div>
           )}
-          {filtered.map((p, i) => (
-            <div key={`${p.source}-${p.name}-${i}`} className="flex items-center gap-3 flex-wrap bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5">
-              <div className="flex-1 min-w-[160px]">
-                <div className="text-white font-bold text-sm flex items-center gap-2">
-                  {p.name}
-                  {isV2(p) && <span className="text-[9px] bg-orange-900/40 text-orange-300 rounded px-1.5 py-0.5 font-bold tracking-wide">V2 MODELS</span>}
+          {filtered.map((p, i) => {
+            const key = `${p.source}-${p.name}-${i}`;
+            const open = expanded === key;
+            const toggle = () => setExpanded(open ? null : key);
+            return (
+              <div key={key} className="bg-gray-800 border border-gray-700 rounded-xl">
+                <div className="flex items-center gap-3 flex-wrap px-3 py-2.5">
+                  <button onClick={toggle} title={open ? 'Hide details' : 'Show details'} aria-expanded={open} className="text-gray-500 hover:text-gray-200 flex-none">
+                    {open ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                  </button>
+                  <div className="flex-1 min-w-[160px] cursor-pointer" onClick={toggle}>
+                    <div className="text-white font-bold text-sm flex items-center gap-2">
+                      {p.name}
+                      {isV2(p) && <span className="text-[9px] bg-orange-900/40 text-orange-300 rounded px-1.5 py-0.5 font-bold tracking-wide">V2 MODELS</span>}
+                    </div>
+                    <div className="text-gray-400 text-[11px]">{AMPS[p.amp.model]?.name} · {fxNames(p)} <span className="text-gray-600">· {p.sourceLabel}</span></div>
+                  </div>
+                  <button onClick={() => onSend(p)} disabled={!amp.connected} title={amp.connected ? '' : 'Connect the amp first'} className="flex items-center gap-1 text-xs font-semibold bg-orange-600 text-white rounded-md px-2.5 py-1.5 hover:bg-orange-500 disabled:opacity-40 disabled:cursor-not-allowed"><Send size={13} />Send</button>
+                  <button onClick={() => (amp.connected ? setSaveTarget(p) : showToast('Connect the amp first'))} disabled={!amp.connected} className="flex items-center gap-1 text-xs font-semibold bg-gray-700 text-gray-200 rounded-md px-2.5 py-1.5 hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"><Save size={13} />Bank…</button>
+                  <button onClick={() => exportPreset(p)} className="flex items-center gap-1 text-xs font-semibold bg-gray-700 text-gray-200 rounded-md px-2.5 py-1.5 hover:bg-gray-600"><Download size={13} />Export</button>
+                  {p.source === 'imported' && (
+                    <button onClick={() => removeImported(p)} className="text-gray-500 hover:text-red-400 rounded-md px-1.5 py-1.5"><X size={14} /></button>
+                  )}
                 </div>
-                <div className="text-gray-400 text-[11px]">{AMPS[p.amp.model]?.name} · {fxNames(p)} <span className="text-gray-600">· {p.sourceLabel}</span></div>
+                {open && <div className="px-3 pb-3"><PresetDetails p={p} /></div>}
               </div>
-              <button onClick={() => onSend(p)} disabled={!amp.connected} title={amp.connected ? '' : 'Connect the amp first'} className="flex items-center gap-1 text-xs font-semibold bg-orange-600 text-white rounded-md px-2.5 py-1.5 hover:bg-orange-500 disabled:opacity-40 disabled:cursor-not-allowed"><Send size={13} />Send</button>
-              <button onClick={() => (amp.connected ? setSaveTarget(p) : showToast('Connect the amp first'))} disabled={!amp.connected} className="flex items-center gap-1 text-xs font-semibold bg-gray-700 text-gray-200 rounded-md px-2.5 py-1.5 hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"><Save size={13} />Bank…</button>
-              <button onClick={() => exportPreset(p)} className="flex items-center gap-1 text-xs font-semibold bg-gray-700 text-gray-200 rounded-md px-2.5 py-1.5 hover:bg-gray-600"><Download size={13} />Export</button>
-              {p.source === 'imported' && (
-                <button onClick={() => removeImported(p)} className="text-gray-500 hover:text-red-400 rounded-md px-1.5 py-1.5"><X size={14} /></button>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
