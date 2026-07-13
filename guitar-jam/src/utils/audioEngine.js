@@ -60,7 +60,7 @@ export function setMasterVolume(v) {
   if (_click) _click.gain.value = _volume;
 }
 
-function getMaster() {
+export function getMaster() {
   const ctx = getAudioCtx();
   if (!_master) {
     _master = ctx.createGain();
@@ -123,7 +123,7 @@ export function midiToFreq(midi) {
 }
 
 // Bandpass-filtered noise — gives a convincing plucked string timbre
-function scheduleGuitarNote(freq, t, dur, ctx, dest) {
+export function scheduleGuitarNote(freq, t, dur, ctx, dest) {
   const len = Math.ceil(ctx.sampleRate * Math.min(dur + 0.2, 3.5));
   const buf = ctx.createBuffer(1, len, ctx.sampleRate);
   const d = buf.getChannelData(0);

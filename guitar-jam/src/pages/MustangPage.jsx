@@ -1,11 +1,12 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Plug, Upload, Send, Save, Download, X, Search, Radio, ChevronRight, ChevronDown } from 'lucide-react';
+import { Plug, Upload, Send, Save, Download, X, Search, Radio, ChevronRight, ChevronDown, Play, Square } from 'lucide-react';
 import {
   FENDER_VID, GEN1_PIDS, AMPS, FX, hex,
   pktInit, pktRequestState, pktExecute, pktSelectBank, pktSaveName,
   pktAmp, pktUsbGain, pktEffect, parseFuse, toFuseXml,
 } from '../utils/mustangProtocol';
 import { loadBundledPresets, loadCommunityPresets, loadCuratedPresets } from '../data/mustangPresets';
+import { previewPreset, stopPreview } from '../utils/mustangPreview';
 
 const LIB_KEY = 'guitar-jam-mustang-lib';
 const RENDER_CAP = 300; // cap visible rows; the community set is ~1,100 presets
@@ -217,7 +218,9 @@ export default function MustangPage() {
   const [query, setQuery] = useState('');
   const [sourceFilter, setSourceFilter] = useState('all'); // all | blues-jam-picks | full-collection | imported
   const [expanded, setExpanded] = useState(null); // key of the open preset
+  const [playingKey, setPlayingKey] = useState(null); // key of the previewing preset
   const [saveTarget, setSaveTarget] = useState(null);
+  const previewTimer = useRef(null);
   const [toast, setToast] = useState('');
   const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef(null);
@@ -291,6 +294,16 @@ export default function MustangPage() {
     catch (err) { showToast('Send failed — see log'); void err; }
   }, [amp, showToast]);
 
+  const preview = useCallback((p, key) => {
+    if (previewTimer.current) clearTimeout(previewTimer.current);
+    if (playingKey === key) { stopPreview(); setPlayingKey(null); return; }
+    const dur = previewPreset(p);
+    setPlayingKey(key);
+    previewTimer.current = setTimeout(() => setPlayingKey(null), dur * 1000 + 500);
+  }, [playingKey]);
+
+  useEffect(() => () => { stopPreview(); if (previewTimer.current) clearTimeout(previewTimer.current); }, []);
+
   const onSaveConfirm = useCallback(async (slot, name) => {
     const p = saveTarget; setSaveTarget(null);
     try { await amp.saveToBank(p, slot, name); showToast(`Saved to bank ${slot + 1}`); }
@@ -347,7 +360,7 @@ export default function MustangPage() {
       {/* Preset library */}
       <section>
         <h3 className="text-lg font-bold text-white mb-1" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>Preset Library</h3>
-        <p className="text-gray-400 text-xs mb-3">Send tones straight to your Mustang, save them into memory banks, or export as <code className="text-teal-400">.fuse</code>.</p>
+        <p className="text-gray-400 text-xs mb-3"><span className="text-teal-300">▶ Preview</span> any tone in your browser (an approximation), send it to your Mustang, save to a memory bank, or export as <code className="text-teal-400">.fuse</code>.</p>
 
         <div
           onClick={() => fileRef.current?.click()}
@@ -406,6 +419,7 @@ export default function MustangPage() {
                     </div>
                     <div className="text-gray-400 text-[11px]">{AMPS[p.amp.model]?.name} · {fxNames(p)} <span className="text-gray-600">· {p.sourceLabel}</span></div>
                   </div>
+                  <button onClick={() => preview(p, key)} title="Preview tone (browser approximation)" aria-label="Preview tone" className={`flex items-center gap-1 text-xs font-semibold rounded-md px-2.5 py-1.5 ${playingKey === key ? 'bg-teal-600 text-white' : 'bg-gray-700 text-teal-300 hover:bg-gray-600'}`}>{playingKey === key ? <Square size={13} /> : <Play size={13} />}</button>
                   <button onClick={() => onSend(p)} disabled={!amp.connected} title={amp.connected ? '' : 'Connect the amp first'} className="flex items-center gap-1 text-xs font-semibold bg-orange-600 text-white rounded-md px-2.5 py-1.5 hover:bg-orange-500 disabled:opacity-40 disabled:cursor-not-allowed"><Send size={13} />Send</button>
                   <button onClick={() => (amp.connected ? setSaveTarget(p) : showToast('Connect the amp first'))} disabled={!amp.connected} className="flex items-center gap-1 text-xs font-semibold bg-gray-700 text-gray-200 rounded-md px-2.5 py-1.5 hover:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"><Save size={13} />Bank…</button>
                   <button onClick={() => exportPreset(p)} className="flex items-center gap-1 text-xs font-semibold bg-gray-700 text-gray-200 rounded-md px-2.5 py-1.5 hover:bg-gray-600"><Download size={13} />Export</button>
