@@ -3,10 +3,12 @@ import { Volume2, VolumeX } from 'lucide-react';
 import DeadProgramPage from './pages/DeadProgramPage';
 import SongbookPage from './pages/SongbookPage';
 import MustangPage from './pages/MustangPage';
+import AssessmentPage from './pages/AssessmentPage';
 import { getMasterVolume, setMasterVolume, armAudioUnlock } from './utils/audioEngine';
 
 const VIEWS = [
   { id: 'program', label: '90-Day Program' },
+  { id: 'assessment', label: 'Assessment' },
   { id: 'songbook', label: 'Songbook' },
   { id: 'amp', label: 'Amp' },
 ];
@@ -60,6 +62,7 @@ export default function App() {
 
       <main className="max-w-[1600px] mx-auto px-5 py-6">
         {view === 'program' && <DeadProgramPage />}
+        {view === 'assessment' && <AssessmentPage />}
         {view === 'songbook' && <SongbookPage />}
         {view === 'amp' && <MustangPage />}
       </main>
