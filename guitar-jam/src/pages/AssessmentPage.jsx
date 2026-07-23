@@ -4,7 +4,7 @@ import ReadinessDial from '../components/stage90/ReadinessDial';
 import TrendChart from '../components/stage90/TrendChart';
 import { ASSESSMENT_WEEKS, PHASES, phaseForWeek, GIG_TEMPO_TARGET, RATING_KEYS } from '../data/assessmentPlan';
 import {
-  loadStage90, saveStage90, dateKey, addDays, currentWeek, daysToGig,
+  loadStage90, saveStage90, emptyStage90, dateKey, addDays, currentWeek, daysToGig,
   planForWeek, gigReadiness, remediationFor, PROGRAM_WEEKS,
 } from '../utils/stage90';
 
@@ -90,7 +90,7 @@ export default function AssessmentPage() {
   const latestPlan = latest ? planForWeek(latest.week) : null;
   const remediation = latest ? remediationFor(latest, latestPlan) : [];
 
-  const start = (gig) => setState({ startDate: dateKey(new Date()), gigDate: gig, assessments: {} });
+  const start = (gig) => setState({ ...emptyStage90(), startDate: dateKey(new Date()), gigDate: gig });
 
   const saveRecord = (record) => {
     setState((s) => ({ ...s, assessments: { ...s.assessments, [record.week]: record } }));
@@ -112,7 +112,7 @@ export default function AssessmentPage() {
     try {
       const parsed = JSON.parse(v);
       if (!parsed.startDate) throw new Error('missing startDate');
-      setState({ startDate: null, gigDate: null, assessments: {}, ...parsed });
+      setState({ ...emptyStage90(), ...parsed });
       alert('Progress restored.');
     } catch {
       alert("Couldn't parse that — make sure it's the exported JSON.");

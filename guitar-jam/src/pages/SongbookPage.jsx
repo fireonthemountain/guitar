@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { SONGS, SONGBOOK_NOTE } from '../data/songs';
 import TabBlock from '../components/guitar/TabBlock';
+import MySet from '../components/stage90/MySet';
 import { PracticeContext } from '../practiceContext';
 
 const DIFF_COLOR = {
@@ -138,6 +139,8 @@ export default function SongbookPage() {
           Dead &amp; Company staples — form, chords, and signature parts you can play, loop, and slow down. Start with Ripple.
         </p>
       </div>
+
+      <MySet />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {SONGS.map((s) => (

@@ -6,14 +6,27 @@ import { ASSESSMENT_WEEKS, GIG_TEMPO_TARGET, TEMPO_FLOOR, RATING_KEYS } from '..
 export const STAGE90_KEY = 'stage90';
 export const PROGRAM_WEEKS = 13; // weeks 1–13 after the week-0 placement
 
-const EMPTY = { startDate: null, gigDate: null, assessments: {} };
+const EMPTY = {
+  startDate: null,
+  gigDate: null,
+  assessments: {},
+  program: { completed: [], blocks: {}, notes: {}, activity: {} },
+  set: [],      // My Set: [{id, title, chords, bpm, minutes}]
+  setruns: [],  // Set Runner logs
+  jams: [],     // Jam Along library
+};
+
+export const emptyStage90 = () => JSON.parse(JSON.stringify(EMPTY));
 
 export function loadStage90() {
   try {
     const s = localStorage.getItem(STAGE90_KEY);
-    if (s) return { ...EMPTY, ...JSON.parse(s) };
+    if (s) {
+      const parsed = JSON.parse(s);
+      return { ...EMPTY, ...parsed, program: { ...EMPTY.program, ...(parsed.program || {}) } };
+    }
   } catch {}
-  return { ...EMPTY };
+  return JSON.parse(JSON.stringify(EMPTY));
 }
 
 export function saveStage90(state) {
