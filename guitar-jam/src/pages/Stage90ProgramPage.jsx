@@ -2,9 +2,11 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { STAGE90_WEEKS, STAGE90_TOTAL_DAYS } from '../data/stage90Curriculum';
 import { PHASES, phaseForWeek } from '../data/assessmentPlan';
+import { texturesForWeek, nextTexture } from '../data/stage90Textures';
 import TabBlock from '../components/guitar/TabBlock';
 import Metronome from '../components/guitar/Metronome';
 import VampPlayer from '../components/guitar/VampPlayer';
+import FocusSession from '../components/stage90/FocusSession';
 import { PracticeContext } from '../practiceContext';
 import {
   loadStage90, saveStage90, dateKey, daysBetween, daysToGig,
@@ -28,19 +30,19 @@ function blocksFor(day, remediation) {
   if (w <= 4) {
     blocks.push(
       { n: 'Warmup', m: 5, d: 'Tone checks on the five open chords, then one change sprint on your slowest pair.' },
-      { n: 'Focus', m: 25, d: 'Work today\'s numbered steps above.' },
+      { n: 'Focus', m: 25, d: 'Work today\'s numbered steps above.', main: true },
       { n: 'Click work', m: 10, d: 'Strum pattern 2 on the metronome, then the reference progression (G–D–Em–C) until it locks.' },
     );
   } else if (w <= 9) {
     blocks.push(
       { n: 'Warmup', m: 5, d: 'One change sprint, then the reference progression at your latest tempo-test BPM.' },
-      { n: 'Song work', m: 30, d: 'Work today\'s numbered steps above.' },
+      { n: 'Song work', m: 30, d: 'Work today\'s numbered steps above.', main: true },
       { n: 'Recovery', m: 10, d: 'Vamp on: comp the 12-bar blues and plant one flub per chorus — keep the groove through it.' },
     );
   } else {
     blocks.push(
       { n: 'Warmup', m: 5, d: 'Reference progression once, then count-ins: two silent bars into each song\'s first chord.' },
-      { n: 'Set work', m: 30, d: 'Work today\'s numbered steps above — the set is the unit of practice now.' },
+      { n: 'Set work', m: 30, d: 'Work today\'s numbered steps above — the set is the unit of practice now.', main: true },
       { n: 'Debrief', m: 10, d: 'Log the run (Set Runner in Songbook), note the worst bar, give it 8 slow reps.' },
     );
   }
@@ -61,6 +63,8 @@ export default function Stage90ProgramPage() {
   const [lessonOpen, setLessonOpen] = useState(() => dayIdx(day) === 0);
   const [practice, setPractice] = useState({ loops: 1, countIn: false, tempoStep: 0, click: true });
   const [optionsOpen, setOptionsOpen] = useState(false);
+  const [focusMode, setFocusMode] = useState(false);
+  const [licksOpen, setLicksOpen] = useState(false);
 
   useEffect(() => { saveStage90(state); }, [state]);
 
@@ -81,6 +85,7 @@ export default function Stage90ProgramPage() {
     if (d < 1 || d > STAGE90_TOTAL_DAYS) return;
     setDay(d);
     setLessonOpen(dayIdx(d) === 0);
+    setFocusMode(false);
     window.scrollTo(0, 0);
   }, []);
 
@@ -104,6 +109,23 @@ export default function Stage90ProgramPage() {
       const completed = on ? [...s.program.completed, day] : s.program.completed.filter((d) => d !== day);
       return { ...s, program: { ...s.program, completed, activity: on ? stamp(s) : s.program.activity } };
     });
+
+  // Guided-session callbacks: set (never unset) block/day completion.
+  const setBlockOn = (i) =>
+    setState((s) => {
+      const cur = s.program.blocks[day] || [];
+      if (cur.includes(i)) return s;
+      return { ...s, program: { ...s.program, blocks: { ...s.program.blocks, [day]: [...cur, i] }, activity: stamp(s) } };
+    });
+  const finishGuidedDay = () => {
+    setState((s) =>
+      s.program.completed.includes(day)
+        ? s
+        : { ...s, program: { ...s.program, completed: [...s.program.completed, day], activity: stamp(s) } }
+    );
+    setFocusMode(false);
+    window.scrollTo(0, 0);
+  };
 
   const setNote = (v) => patch((p) => ({ ...p, notes: { ...p.notes, [day]: v } }));
 
@@ -155,6 +177,17 @@ export default function Stage90ProgramPage() {
           )}
         </div>
 
+        {focusMode ? (
+          <FocusSession
+            blocks={blocks}
+            steps={dd.assessment ? [] : dd.h}
+            weekTabs={[...week.lesson.tabs, ...texturesForWeek(w).slice(-2).map((x) => ({ l: x.l, t: x.t }))]}
+            dayLabel={`Day ${day} · Week ${w} — ${week.t}`}
+            onBlockDone={setBlockOn}
+            onFinishDay={finishGuidedDay}
+            onExit={() => setFocusMode(false)}
+          />
+        ) : (
         <div className="grid gap-5 lg:grid-cols-3 items-start">
           {/* Main column */}
           <div className="lg:col-span-2 space-y-4 min-w-0">
@@ -210,6 +243,32 @@ export default function Stage90ProgramPage() {
               </div>
             )}
 
+            {/* Licks & fingerpicking — the texture track, unlocked week by week */}
+            {texturesForWeek(w).length > 0 && (
+              <div className="bg-gray-800/60 border border-gray-700 rounded-2xl overflow-hidden">
+                <button onClick={() => setLicksOpen((o) => !o)} className="w-full flex justify-between items-center px-4 py-3.5 text-sm font-bold text-white text-left">
+                  <span>
+                    <span className="text-amber-400">Licks &amp; picking</span> · {texturesForWeek(w).length} unlocked
+                    {nextTexture(w) && <span className="text-gray-500 font-normal"> — next: week {nextTexture(w).week}</span>}
+                  </span>
+                  <span className="text-gray-400 text-lg leading-none">{licksOpen ? '−' : '+'}</span>
+                </button>
+                {licksOpen && (
+                  <div className="px-4 pb-4 space-y-4">
+                    {texturesForWeek(w).map((x) => (
+                      <div key={x.l}>
+                        <TabBlock label={x.l} tab={x.t} />
+                        <p className="text-gray-400 text-xs leading-snug mt-1 px-1">{x.tip}</p>
+                      </div>
+                    ))}
+                    {nextTexture(w) && (
+                      <p className="text-gray-600 text-[11px] px-1">🔒 Week {nextTexture(w).week} unlocks: {nextTexture(w).l}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Today's focus */}
             <div className={`rounded-2xl p-4 ${dd.assessment ? 'bg-teal-950/40 border border-teal-600/60' : 'bg-gray-800'}`}>
               <div className="text-rose-400 text-[10px] font-bold tracking-[2px] mb-1.5">TODAY'S FOCUS</div>
@@ -224,9 +283,19 @@ export default function Stage90ProgramPage() {
               </div>
             </div>
 
+            {/* Guided session — one exercise at a time */}
+            {!dd.assessment && (
+              <button
+                onClick={() => { setFocusMode(true); window.scrollTo(0, 0); }}
+                className="w-full py-3.5 rounded-xl font-extrabold text-[15px] bg-teal-600 hover:bg-teal-500 text-white"
+              >
+                ▶ Start today's session — guided, one exercise at a time
+              </button>
+            )}
+
             {/* Session blocks */}
             <div>
-              <div className="text-gray-500 text-[10px] font-bold tracking-[2px] mb-2 ml-0.5">TODAY'S SESSION · ~{blocks.reduce((a, b) => a + b.m, 0)} MIN</div>
+              <div className="text-gray-500 text-[10px] font-bold tracking-[2px] mb-2 ml-0.5">TODAY'S SESSION · ~{blocks.reduce((a, b) => a + b.m, 0)} MIN — OR CHECK OFF FREESTYLE</div>
               <div className="space-y-2">
                 {blocks.map((b, i) => {
                   const on = doneBlocks.includes(i);
@@ -301,6 +370,7 @@ export default function Stage90ProgramPage() {
             </div>
           </div>
         </div>
+        )}
       </div>
     </PracticeContext.Provider>
   );

@@ -86,6 +86,7 @@ export const ASSESSMENT_WEEKS = [
       { id: 'w5-form', label: 'Song 1 full form at 80% tempo with sheet', fix: 'Slow the full run to 70% and log which bars pull your eyes to the sheet.' },
       { id: 'w5-mem', label: 'Song 1 verse + chorus from memory (sheet face-down)', fix: 'Memorize by section: play from memory until stuck, peek once, restart the section.' },
       { id: 'w5-jam', label: 'Two Jam Along sessions this week', fix: 'Schedule them like appointments — jamming is where recovery skill comes from.' },
+      { id: 'w5-pick', label: 'G arpeggio fingerpicking pattern steady for one minute, thumb on the bass strings', fix: 'Two quiet minutes of the pattern at the end of every session — slow enough to be perfectly even.' },
     ],
   },
   {
@@ -116,6 +117,7 @@ export const ASSESSMENT_WEEKS = [
       { id: 'w8-stand2', label: 'Song 2 from memory, standing, at 90% tempo', fix: 'Alternate days: song 2 standing runs / song 3 section work.' },
       { id: 'w8-three', label: 'Song 3 full form with sheet at 70% tempo', fix: 'Song 3 gets the fresh first 15 minutes; songs 1–2 move to maintenance runs.' },
       { id: 'w8-recov', label: 'One planted-mistake run per song without stopping', fix: 'Keep the flub drill daily — recovery decays fast.' },
+      { id: 'w8-fill', label: 'One fill or walkup dropped into a song mid-run without losing the beat', fix: 'Loop the fill over the vamp player until it lands on beat 1 every single time, then re-plant it in the song.' },
     ],
   },
   {
