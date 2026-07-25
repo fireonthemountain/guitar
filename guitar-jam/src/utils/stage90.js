@@ -31,6 +31,8 @@ export function loadStage90() {
 
 export function saveStage90(state) {
   try { localStorage.setItem(STAGE90_KEY, JSON.stringify(state)); } catch {}
+  // Lazy import avoids a cycle (syncClient imports STAGE90_KEY from here).
+  import('./syncClient').then((m) => m.schedulePush()).catch(() => {});
 }
 
 export const dateKey = (d) => d.toISOString().slice(0, 10);
