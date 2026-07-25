@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import AssessmentWizard from '../components/stage90/AssessmentWizard';
 import ReadinessDial from '../components/stage90/ReadinessDial';
 import TrendChart from '../components/stage90/TrendChart';
+import SyncCard from '../components/stage90/SyncCard';
 import { ASSESSMENT_WEEKS, PHASES, phaseForWeek, GIG_TEMPO_TARGET, RATING_KEYS } from '../data/assessmentPlan';
 import {
   loadStage90, saveStage90, emptyStage90, dateKey, addDays, currentWeek, daysToGig,
@@ -298,6 +299,9 @@ export default function AssessmentPage() {
                     </div>
                   </div>
                 )}
+
+                {/* Cloud sync */}
+                <SyncCard />
 
                 {/* Backup */}
                 <div className="text-center pt-1">

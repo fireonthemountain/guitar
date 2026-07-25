@@ -1,0 +1,8 @@
+name = "guitar-sync"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+# After `npx wrangler kv namespace create SYNC_KV`, paste the id it prints here.
+[[kv_namespaces]]
+binding = "SYNC_KV"
+id = "PASTE_YOUR_KV_NAMESPACE_ID_HERE"
