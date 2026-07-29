@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
-import { STAGE90_WEEKS, STAGE90_TOTAL_DAYS } from '../data/stage90Curriculum';
+import { STAGE90_WEEKS, STAGE90_TOTAL_DAYS, CORE_CHARTS } from '../data/stage90Curriculum';
 import { PHASES, phaseForWeek } from '../data/assessmentPlan';
 import { texturesForWeek, nextTexture } from '../data/stage90Textures';
 import TabBlock from '../components/guitar/TabBlock';
@@ -132,6 +132,12 @@ export default function Stage90ProgramPage() {
   const blocks = blocksFor(day, remediation);
   const weekDone = state.program.completed.filter((d) => weekOf(d) === w).length;
 
+  // Week-specific charts first, then the core charts (open chords, strum
+  // patterns, reference progression) — the steps name these on every day.
+  const allCharts = [...week.lesson.tabs, ...CORE_CHARTS].filter(
+    (t, i, arr) => arr.findIndex((x) => x.l === t.l) === i
+  );
+
   return (
     <PracticeContext.Provider value={practice}>
       <div className="space-y-6">
@@ -181,7 +187,7 @@ export default function Stage90ProgramPage() {
           <FocusSession
             blocks={blocks}
             steps={dd.assessment ? [] : dd.h}
-            weekTabs={[...week.lesson.tabs, ...texturesForWeek(w).slice(-2).map((x) => ({ l: x.l, t: x.t }))]}
+            weekTabs={[...allCharts, ...texturesForWeek(w).slice(-2).map((x) => ({ l: x.l, t: x.t }))]}
             dayLabel={`Day ${day} · Week ${w} — ${week.t}`}
             onBlockDone={setBlockOn}
             onFinishDay={finishGuidedDay}
@@ -231,17 +237,15 @@ export default function Stage90ProgramPage() {
               )}
             </div>
 
-            {/* Week charts */}
-            {week.lesson.tabs.length > 0 && (
-              <div className="bg-gray-800 rounded-2xl p-4">
-                <div className="text-teal-400 text-[10px] font-bold tracking-[2px] mb-1">THIS WEEK'S CHARTS</div>
-                <div className="grid xl:grid-cols-2 gap-x-4">
-                  {week.lesson.tabs.map((t, i) => (
-                    <TabBlock key={i} label={t.l} tab={t.t} />
-                  ))}
-                </div>
+            {/* Charts — this week's, plus the always-available core charts */}
+            <div className="bg-gray-800 rounded-2xl p-4">
+              <div className="text-teal-400 text-[10px] font-bold tracking-[2px] mb-1">THIS WEEK'S CHARTS</div>
+              <div className="grid xl:grid-cols-2 gap-x-4">
+                {allCharts.map((t, i) => (
+                  <TabBlock key={i} label={t.l} tab={t.t} />
+                ))}
               </div>
-            )}
+            </div>
 
             {/* Licks & fingerpicking — the texture track, unlocked week by week */}
             {texturesForWeek(w).length > 0 && (
