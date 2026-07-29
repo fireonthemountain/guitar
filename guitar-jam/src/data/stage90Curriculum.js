@@ -51,6 +51,10 @@ const TWELVE_BAR = {
 bars 1-4: I chord   bars 5-8: IV then I   bars 9-12: V-IV-I turnaround`,
 };
 
+// The charts the daily steps assume you can see — available on EVERY day,
+// because "pattern 2" or "the reference progression" gets named all program long.
+export const CORE_CHARTS = [OPEN_CHORDS, STRUM_CHART, REFERENCE_TAB];
+
 // A practice day: f = focus, h = the numbered steps.
 const A = (w) => ({
   f: 'Assessment Day',
