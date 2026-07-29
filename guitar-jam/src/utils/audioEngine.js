@@ -37,6 +37,7 @@ export function armAudioUnlock() {
   const evs = ['pointerdown', 'touchend', 'keydown'];
   const h = () => {
     unlockAudio();
+    loadGuitarSamples(); // fetch the real-guitar samples on the first gesture
     // Once unlocked, stop listening — no need to create a node on every event.
     if (_unlocked) evs.forEach((e) => window.removeEventListener(e, h));
   };
@@ -122,8 +123,66 @@ export function midiToFreq(midi) {
   return 440 * Math.pow(2, (midi - 69) / 12);
 }
 
-// Bandpass-filtered noise — gives a convincing plucked string timbre
+// ── Real-guitar sampler ─────────────────────────────────────────────────────
+// Six DI recordings of an actual guitar (shared with the Mustang tone preview)
+// cover the neck; every note picks the nearest sample and pitch-shifts via
+// playbackRate. Until the ~120 KB of samples finish decoding — or if the fetch
+// fails offline — the old noise-burst synth below stands in, so playback never
+// blocks on the network.
+const ASSET_BASE = import.meta.env.BASE_URL || '/';
+const SAMPLE_NOTES = [[40, 'E2'], [47, 'B2'], [52, 'E3'], [55, 'G3'], [57, 'A3'], [59, 'B3']];
+const _sampleBufs = {};
+let _samplesLoading = null;
+
+export function loadGuitarSamples() {
+  if (_samplesLoading) return _samplesLoading;
+  const ctx = getAudioCtx();
+  const load = async (u) => ctx.decodeAudioData(await (await fetch(u)).arrayBuffer());
+  _samplesLoading = Promise.all(
+    SAMPLE_NOTES.map(([m, n]) =>
+      load(`${ASSET_BASE}mustang-audio/gtr/${n}.mp3`).then((b) => { _sampleBufs[m] = b; }).catch(() => {})
+    )
+  );
+  return _samplesLoading;
+}
+
+function nearestSample(midi) {
+  let best = null, bestDist = Infinity;
+  for (const [m] of SAMPLE_NOTES) {
+    if (!_sampleBufs[m]) continue;
+    const d = Math.abs(midi - m);
+    if (d < bestDist || (d === bestDist && m < best)) { best = m; bestDist = d; }
+  }
+  return best;
+}
+
 export function scheduleGuitarNote(freq, t, dur, ctx, dest) {
+  const midi = Math.round(69 + 12 * Math.log2(freq / 440));
+  const sampleMidi = nearestSample(midi);
+  if (sampleMidi === null) {
+    loadGuitarSamples(); // kick the fetch; this note falls back to the synth
+    scheduleSynthGuitarNote(freq, t, dur, ctx, dest);
+    return;
+  }
+  const src = ctx.createBufferSource();
+  src.buffer = _sampleBufs[sampleMidi];
+  src.playbackRate.value = Math.pow(2, (midi - sampleMidi) / 12);
+
+  // The recording carries its own natural decay; the envelope only fades the
+  // tail so notes fit their rhythmic slot (and 50 ms "x" chunks stay chunks).
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(1.0, t);
+  gain.gain.setValueAtTime(1.0, t + Math.max(0.02, dur - 0.05));
+  gain.gain.linearRampToValueAtTime(0.0001, t + dur + 0.05);
+
+  src.connect(gain);
+  gain.connect(dest || getMaster());
+  src.start(t);
+  src.stop(t + dur + 0.1);
+}
+
+// Bandpass-filtered noise — the old synthetic pluck, now the fallback voice
+function scheduleSynthGuitarNote(freq, t, dur, ctx, dest) {
   const len = Math.ceil(ctx.sampleRate * Math.min(dur + 0.2, 3.5));
   const buf = ctx.createBuffer(1, len, ctx.sampleRate);
   const d = buf.getChannelData(0);

@@ -13,6 +13,10 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icons/icon-192.png', 'icons/icon-512.png'],
+      workbox: {
+        // Include the real-guitar samples (+ cab IR) so playback works offline.
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest,mp3,wav}'],
+      },
       manifest: {
         name: 'Guitar Practice',
         short_name: 'Guitar',
