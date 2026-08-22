@@ -60,7 +60,8 @@ export default function Stage90ProgramPage() {
     ? Math.max(1, Math.min(STAGE90_TOTAL_DAYS, daysBetween(state.startDate, dateKey(new Date())) + 1))
     : null;
   const [day, setDay] = useState(() => calendarDay ?? firstIncomplete(loadStage90().program.completed));
-  const [lessonOpen, setLessonOpen] = useState(() => dayIdx(day) === 0);
+  const [lessonOpen, setLessonOpen] = useState(false);
+  const [chartsOpen, setChartsOpen] = useState(false);
   const [practice, setPractice] = useState({ loops: 1, countIn: false, tempoStep: 0, click: true });
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
@@ -84,7 +85,7 @@ export default function Stage90ProgramPage() {
   const goto = useCallback((d) => {
     if (d < 1 || d > STAGE90_TOTAL_DAYS) return;
     setDay(d);
-    setLessonOpen(dayIdx(d) === 0);
+    setLessonOpen(false);
     setFocusMode(false);
     window.scrollTo(0, 0);
   }, []);
@@ -197,25 +198,80 @@ export default function Stage90ProgramPage() {
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 items-start">
           {/* Main column */}
           <div className="lg:col-span-2 space-y-4 min-w-0">
-            {/* Injected focus */}
-            {remediation.length > 0 && !dd.assessment && (
-              <div className="bg-amber-950/30 border border-amber-600/50 rounded-2xl p-4">
-                <div className="text-amber-400 text-[10px] font-bold tracking-[2px] mb-2">INJECTED FOCUS — FROM YOUR LAST ASSESSMENT</div>
-                <div className="space-y-1.5">
-                  {remediation.map((r) => (
-                    <div key={r.id} className="text-sm text-gray-300 leading-snug flex gap-2">
-                      <span className={r.result === 'fail' ? 'text-rose-400' : 'text-amber-400'}>{r.result === 'fail' ? '✗' : '~'}</span>
-                      {r.fix}
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {/* The work comes first: start button, then today's exercises. */}
+            {!dd.assessment && (
+              <button
+                onClick={() => { setFocusMode(true); window.scrollTo(0, 0); }}
+                className="w-full py-4 rounded-xl font-extrabold text-base bg-teal-600 hover:bg-teal-500 text-white"
+              >
+                ▶ Start today's session
+              </button>
             )}
+
+            {/* Today's focus */}
+            <div className={`rounded-2xl p-4 ${dd.assessment ? 'bg-teal-950/40 border border-teal-600/60' : 'bg-gray-800'}`}>
+              <div className="text-rose-400 text-[10px] font-bold tracking-[2px] mb-1.5">TODAY · WEEK {w} — {week.t.toUpperCase()}</div>
+              <div className="text-white text-lg leading-snug mb-3" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>{dd.f}</div>
+              <div className="space-y-2">
+                {dd.h.map((s, i) => (
+                  <div key={i} className="flex gap-2.5 items-start">
+                    <div className="w-5 h-5 rounded-full flex-shrink-0 mt-0.5 grid place-items-center bg-gray-700 text-amber-400 text-[11px] font-extrabold">{i + 1}</div>
+                    <div className="text-gray-300 text-sm leading-relaxed">{s}</div>
+                  </div>
+                ))}
+              </div>
+              {/* Remediation from the last assessment lives with the work, not in its own card */}
+              {remediation.length > 0 && !dd.assessment && (
+                <div className="mt-3 pt-3 border-t border-amber-600/30">
+                  <div className="text-amber-400 text-[10px] font-bold tracking-[2px] mb-1.5">ALSO THIS WEEK — FROM YOUR LAST ASSESSMENT</div>
+                  <div className="space-y-1.5">
+                    {remediation.map((r) => (
+                      <div key={r.id} className="text-sm text-gray-300 leading-snug flex gap-2">
+                        <span className={r.result === 'fail' ? 'text-rose-400' : 'text-amber-400'}>{r.result === 'fail' ? '✗' : '~'}</span>
+                        {r.fix}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Session blocks */}
+            <div>
+              <div className="text-gray-500 text-[10px] font-bold tracking-[2px] mb-2 ml-0.5">TODAY'S SESSION · ~{blocks.reduce((a, b) => a + b.m, 0)} MIN — OR CHECK OFF FREESTYLE</div>
+              <div className="space-y-2">
+                {blocks.map((b, i) => {
+                  const on = doneBlocks.includes(i);
+                  return (
+                    <button key={i} onClick={() => toggleBlock(i)} className={`w-full flex gap-3 items-start text-left rounded-xl p-3 border transition-colors ${on ? 'bg-gray-800/50 border-amber-500/40' : 'bg-gray-800 border-gray-700 hover:border-gray-600'}`}>
+                      <div className={`rounded-lg flex-shrink-0 mt-0.5 grid place-items-center border-2 text-sm font-extrabold ${on ? 'bg-amber-500 border-amber-500 text-stone-900' : 'border-gray-600 text-transparent'}`} style={{ width: 22, height: 22 }}>
+                        ✓
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-white">{b.n} <span className="text-amber-400 font-semibold">· {b.m} min</span></div>
+                        <div className={`text-sm mt-0.5 leading-snug ${on ? 'text-gray-500 line-through' : 'text-gray-400'}`}>{b.d}</div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Done */}
+            <button onClick={toggleDay} className={`w-full py-3.5 rounded-xl font-extrabold text-[15px] transition-colors ${dayDone ? 'bg-gray-700 text-gray-300' : 'bg-rose-500 hover:bg-rose-400 text-rose-50'}`}>
+              {dayDone ? '✓ Day complete — tap to undo' : 'Mark day complete'}
+            </button>
+
+            {/* Reference — everything readable lives below the work, folded away */}
+            <div className="text-gray-500 text-[10px] font-bold tracking-[2px] pt-2 ml-0.5">WHEN YOU NEED IT</div>
 
             {/* Lesson */}
             <div className="bg-gray-800/60 border border-gray-700 rounded-2xl overflow-hidden">
               <button onClick={() => setLessonOpen((o) => !o)} className="w-full flex justify-between items-center px-4 py-3.5 text-sm font-bold text-white text-left">
-                <span><span className="text-amber-400">Lesson · Week {w}:</span> {week.t}</span>
+                <span>
+                  <span className="text-amber-400">Why this week:</span> {week.t}
+                  {dayIdx(day) === 0 && <span className="ml-2 text-[10px] font-bold text-teal-300 bg-teal-900/50 border border-teal-700 rounded px-1.5 py-0.5">NEW WEEK</span>}
+                </span>
                 <span className="text-gray-400 text-lg leading-none">{lessonOpen ? '−' : '+'}</span>
               </button>
               {lessonOpen && (
@@ -237,14 +293,21 @@ export default function Stage90ProgramPage() {
               )}
             </div>
 
-            {/* Charts — this week's, plus the always-available core charts */}
-            <div className="bg-gray-800 rounded-2xl p-4">
-              <div className="text-teal-400 text-[10px] font-bold tracking-[2px] mb-1">THIS WEEK'S CHARTS</div>
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4">
-                {allCharts.map((t, i) => (
-                  <TabBlock key={i} label={t.l} tab={t.t} />
-                ))}
-              </div>
+            {/* Charts */}
+            <div className="bg-gray-800/60 border border-gray-700 rounded-2xl overflow-hidden">
+              <button onClick={() => setChartsOpen((o) => !o)} className="w-full flex justify-between items-center px-4 py-3.5 text-sm font-bold text-white text-left">
+                <span><span className="text-amber-400">Charts</span> · chords, strum patterns, reference progression</span>
+                <span className="text-gray-400 text-lg leading-none">{chartsOpen ? '−' : '+'}</span>
+              </button>
+              {chartsOpen && (
+                <div className="px-4 pb-4">
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4">
+                    {allCharts.map((t, i) => (
+                      <TabBlock key={i} label={t.l} tab={t.t} />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Licks & fingerpicking — the texture track, unlocked week by week */}
@@ -272,56 +335,6 @@ export default function Stage90ProgramPage() {
                 )}
               </div>
             )}
-
-            {/* Today's focus */}
-            <div className={`rounded-2xl p-4 ${dd.assessment ? 'bg-teal-950/40 border border-teal-600/60' : 'bg-gray-800'}`}>
-              <div className="text-rose-400 text-[10px] font-bold tracking-[2px] mb-1.5">TODAY'S FOCUS</div>
-              <div className="text-white text-lg leading-snug mb-3" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>{dd.f}</div>
-              <div className="space-y-2">
-                {dd.h.map((s, i) => (
-                  <div key={i} className="flex gap-2.5 items-start">
-                    <div className="w-5 h-5 rounded-full flex-shrink-0 mt-0.5 grid place-items-center bg-gray-700 text-amber-400 text-[11px] font-extrabold">{i + 1}</div>
-                    <div className="text-gray-300 text-sm leading-relaxed">{s}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Guided session — one exercise at a time */}
-            {!dd.assessment && (
-              <button
-                onClick={() => { setFocusMode(true); window.scrollTo(0, 0); }}
-                className="w-full py-3.5 rounded-xl font-extrabold text-[15px] bg-teal-600 hover:bg-teal-500 text-white"
-              >
-                ▶ Start today's session — guided, one exercise at a time
-              </button>
-            )}
-
-            {/* Session blocks */}
-            <div>
-              <div className="text-gray-500 text-[10px] font-bold tracking-[2px] mb-2 ml-0.5">TODAY'S SESSION · ~{blocks.reduce((a, b) => a + b.m, 0)} MIN — OR CHECK OFF FREESTYLE</div>
-              <div className="space-y-2">
-                {blocks.map((b, i) => {
-                  const on = doneBlocks.includes(i);
-                  return (
-                    <button key={i} onClick={() => toggleBlock(i)} className={`w-full flex gap-3 items-start text-left rounded-xl p-3 border transition-colors ${on ? 'bg-gray-800/50 border-amber-500/40' : 'bg-gray-800 border-gray-700 hover:border-gray-600'}`}>
-                      <div className={`rounded-lg flex-shrink-0 mt-0.5 grid place-items-center border-2 text-sm font-extrabold ${on ? 'bg-amber-500 border-amber-500 text-stone-900' : 'border-gray-600 text-transparent'}`} style={{ width: 22, height: 22 }}>
-                        ✓
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold text-white">{b.n} <span className="text-amber-400 font-semibold">· {b.m} min</span></div>
-                        <div className={`text-sm mt-0.5 leading-snug ${on ? 'text-gray-500 line-through' : 'text-gray-400'}`}>{b.d}</div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Done */}
-            <button onClick={toggleDay} className={`w-full py-3.5 rounded-xl font-extrabold text-[15px] transition-colors ${dayDone ? 'bg-gray-700 text-gray-300' : 'bg-rose-500 hover:bg-rose-400 text-rose-50'}`}>
-              {dayDone ? '✓ Day complete — tap to undo' : 'Mark day complete'}
-            </button>
 
             {/* Notes */}
             <div>
