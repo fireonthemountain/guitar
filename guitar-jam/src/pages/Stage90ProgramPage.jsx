@@ -64,7 +64,12 @@ export default function Stage90ProgramPage() {
   const [chartsOpen, setChartsOpen] = useState(false);
   const [practice, setPractice] = useState({ loops: 1, countIn: false, tempoStep: 0, click: true });
   const [optionsOpen, setOptionsOpen] = useState(false);
-  const [focusMode, setFocusMode] = useState(false);
+  // The guided walkthrough IS the default way a day opens; the all-in-one
+  // overview is the advanced view (reachable via the walkthrough's ✕).
+  const [focusMode, setFocusMode] = useState(() => {
+    const d0 = STAGE90_WEEKS[weekOf(day)].days[dayIdx(day)];
+    return !d0.assessment && !state.program.completed.includes(day);
+  });
   const [licksOpen, setLicksOpen] = useState(false);
 
   useEffect(() => { saveStage90(state); }, [state]);
@@ -190,6 +195,7 @@ export default function Stage90ProgramPage() {
             steps={dd.assessment ? [] : dd.h}
             weekTabs={[...allCharts, ...texturesForWeek(w).slice(-2).map((x) => ({ l: x.l, t: x.t }))]}
             dayLabel={`Day ${day} · Week ${w} — ${week.t}`}
+            intro={dayIdx(day) === 0 ? { title: week.t, paragraphs: week.lesson.p } : null}
             onBlockDone={setBlockOn}
             onFinishDay={finishGuidedDay}
             onExit={() => setFocusMode(false)}
@@ -204,8 +210,11 @@ export default function Stage90ProgramPage() {
                 onClick={() => { setFocusMode(true); window.scrollTo(0, 0); }}
                 className="w-full py-4 rounded-xl font-extrabold text-base bg-teal-600 hover:bg-teal-500 text-white"
               >
-                ▶ Start today's session
+                ▶ {dayDone ? 'Run today\'s session again' : 'Back to the guided session'}
               </button>
+            )}
+            {!dd.assessment && (
+              <p className="text-gray-600 text-[11px] text-center -mt-2">This overview is the advanced view — the guided session is the main path.</p>
             )}
 
             {/* Today's focus */}
