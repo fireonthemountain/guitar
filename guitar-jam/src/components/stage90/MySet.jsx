@@ -171,7 +171,7 @@ export default function MySet() {
           {/* Add song */}
           {adding ? (
             <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-3 space-y-2">
-              <div className="grid sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <input value={draft.title} onChange={(e) => setDraft((d) => ({ ...d, title: e.target.value }))} placeholder="Song title" className="bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" autoFocus />
                 <input value={draft.chords} onChange={(e) => setDraft((d) => ({ ...d, chords: e.target.value }))} placeholder="Chords (G C D Em…)" className="bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />
                 <input value={draft.bpm} onChange={(e) => setDraft((d) => ({ ...d, bpm: e.target.value }))} type="number" placeholder="Target BPM" className="bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm" />

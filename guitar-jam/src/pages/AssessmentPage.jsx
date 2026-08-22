@@ -193,7 +193,7 @@ export default function AssessmentPage() {
           )}
 
           {wizardWeek === null && (
-            <div className="grid gap-5 lg:grid-cols-3 items-start">
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 items-start">
               {/* Main column */}
               <div className="lg:col-span-2 space-y-4 min-w-0">
                 {/* This week */}
