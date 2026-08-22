@@ -10,8 +10,12 @@ import Metronome from '../guitar/Metronome';
 
 const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.max(0, Math.floor(s % 60))).padStart(2, '0')}`;
 
-function buildCards(blocks, steps) {
+function buildCards(blocks, steps, intro) {
   const cards = [];
+  // Week-start days open with the lesson itself — the walkthrough IS the lesson.
+  if (intro) {
+    cards.push({ block: { n: 'Why this week' }, blockIdx: -1, label: `Why this week — ${intro.title}`, paragraphs: intro.paragraphs, seconds: 90, lastOfBlock: false });
+  }
   blocks.forEach((b, bi) => {
     if (b.main && steps.length) {
       const per = Math.max(120, Math.round((b.m * 60) / steps.length));
@@ -25,8 +29,8 @@ function buildCards(blocks, steps) {
   return cards;
 }
 
-export default function FocusSession({ blocks, steps, weekTabs, dayLabel, onBlockDone, onFinishDay, onExit }) {
-  const [cards] = useState(() => buildCards(blocks, steps));
+export default function FocusSession({ blocks, steps, weekTabs, dayLabel, intro, onBlockDone, onFinishDay, onExit }) {
+  const [cards] = useState(() => buildCards(blocks, steps, intro));
   const [idx, setIdx] = useState(0);
   const [finished, setFinished] = useState(false);
   const [remaining, setRemaining] = useState(cards[0]?.seconds ?? 0);
@@ -45,7 +49,7 @@ export default function FocusSession({ blocks, steps, weekTabs, dayLabel, onBloc
   }, [idx]);
 
   const advance = () => {
-    if (card.lastOfBlock) onBlockDone(card.blockIdx);
+    if (card.lastOfBlock && card.blockIdx >= 0) onBlockDone(card.blockIdx);
     if (idx + 1 < cards.length) {
       setIdx(idx + 1);
       setRemaining(cards[idx + 1].seconds);
@@ -105,7 +109,16 @@ export default function FocusSession({ blocks, steps, weekTabs, dayLabel, onBloc
           </div>
         </div>
 
-        <p className="text-gray-100 text-lg leading-relaxed" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>{card.text}</p>
+        {card.paragraphs ? (
+          <div className="space-y-2.5">
+            {card.paragraphs.map((p, i) => (
+              <p key={i} className="text-gray-200 text-[15px] leading-relaxed">{p}</p>
+            ))}
+            <p className="text-gray-500 text-xs">Read it once — it's here every day under "When you need it."</p>
+          </div>
+        ) : (
+          <p className="text-gray-100 text-lg leading-relaxed" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>{card.text}</p>
+        )}
 
         {over && <p className="text-emerald-400/80 text-xs">Time's up on this one — move on when it feels done, not before.</p>}
 
