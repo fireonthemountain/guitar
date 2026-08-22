@@ -3,6 +3,12 @@
 Personal guitar practice apps. The main app is **[guitar-jam](guitar-jam/)** — everything else
 feeds into it or is kept as source material.
 
+**Live app: <https://guitar-one-blush.vercel.app/>** — hosted on Vercel, auto-deployed from
+`main` (root directory `guitar-jam`). Open it on any device and Add to Home Screen (it's a
+PWA). Optional login wall: Vercel project → Settings → Deployment Protection → Vercel
+Authentication. Progress syncs across devices once the [sync worker](sync-worker/) is set up;
+otherwise use the in-app Export/Import.
+
 ## Stage Ready 90 — the headline program
 
 A 14-week path (week-0 placement + 13 training weeks) from wherever you are to a
@@ -16,7 +22,7 @@ without stopping. Lives in guitar-jam across four tabs:
 | **Jam Along** | Save YouTube lessons/backing tracks (e.g. [Daniel Seriff](https://www.youtube.com/channel/UCdndQZ_Yt3BifEaOqeyESQA)), tag key + scale once, and the fretboard shows what to play while the video runs. A/B section looping and 0.5–1× speed. |
 | **Songbook** | Dead & Co staples with playable tabs, plus **My Set** — your three gig songs — and the **Set Runner**: timed full-set runs with a stumble counter, logged against your planned set length. |
 
-The full design is in [PLAN.md](PLAN.md). See it through: `cd guitar-jam && npm install && npm run dev`.
+The full design is in [PLAN.md](PLAN.md). Run locally: `cd guitar-jam && npm install && npm run dev`.
 
 ## Subprojects
 
