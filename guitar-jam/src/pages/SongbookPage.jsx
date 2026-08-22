@@ -47,7 +47,7 @@ function SongDetail({ song, onBack }) {
           </div>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-3 items-start">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 items-start">
           {/* Main: the playable stuff */}
           <div className="lg:col-span-2 space-y-4 min-w-0">
             {/* Loop controls — looping a lick is how you learn a part */}
@@ -84,7 +84,7 @@ function SongDetail({ song, onBack }) {
             {/* Signature parts */}
             <div className="bg-gray-800 rounded-2xl p-4">
               <div className="text-rose-400 text-[10px] font-bold tracking-[2px] mb-1">SIGNATURE PARTS</div>
-              <div className="grid xl:grid-cols-2 gap-x-4">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4">
                 {song.parts.map((p, i) => (
                   <TabBlock key={i} label={p.l} tab={p.t} />
                 ))}
@@ -142,7 +142,7 @@ export default function SongbookPage() {
 
       <MySet />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {SONGS.map((s) => (
           <SongCard key={s.id} song={s} onOpen={() => setOpenId(s.id)} />
         ))}

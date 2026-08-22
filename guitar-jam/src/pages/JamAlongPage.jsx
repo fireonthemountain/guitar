@@ -26,7 +26,7 @@ function AddJamForm({ onAdd, onCancel }) {
   return (
     <div className="bg-gray-800 border border-gray-700 rounded-2xl p-4 space-y-3">
       <div className="text-teal-400 text-[10px] font-bold tracking-[2px]">ADD A JAM VIDEO</div>
-      <div className="grid sm:grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <input value={d.url} onChange={upd('url')} placeholder="YouTube link (lesson, backing track…)" className="bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm sm:col-span-2" autoFocus />
         <input value={d.title} onChange={upd('title')} placeholder="Title (e.g. Seriff — A minor jam)" className="bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm sm:col-span-2" />
         <select value={d.keyIdx} onChange={(e) => setD((x) => ({ ...x, keyIdx: Number(e.target.value) }))} className="bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm">
@@ -98,7 +98,7 @@ export default function JamAlongPage() {
           </div>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-3 items-start">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 items-start">
           <div className="lg:col-span-2 space-y-4 min-w-0">
             <div className="bg-gray-800 rounded-2xl p-4">
               <YouTubeJam videoId={jam.videoId} />
@@ -173,7 +173,7 @@ export default function JamAlongPage() {
         </p>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {jams.map((j) => (
           <div key={j.id} className="relative bg-gray-800 border border-gray-700 hover:border-teal-600 rounded-2xl overflow-hidden transition-colors">
             <button onClick={() => setOpenId(j.id)} className="text-left w-full">
