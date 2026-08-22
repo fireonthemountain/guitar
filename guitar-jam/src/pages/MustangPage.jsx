@@ -445,7 +445,7 @@ export default function MustangPage() {
         {!amp.connected ? (
           <div className="bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-gray-500 text-sm">Connect the amp to read its presets.</div>
         ) : (
-          <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}>
+          <div className="grid grid-cols-1 gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}>
             {Array.from({ length: 24 }, (_, i) => (
               <div key={i} className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-xs">
                 <span className="block text-[10px] font-bold text-orange-400">BANK {String(i + 1).padStart(2, '0')}</span>
