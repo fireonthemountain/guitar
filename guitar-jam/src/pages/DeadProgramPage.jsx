@@ -319,7 +319,7 @@ export default function DeadProgramPage() {
       </div>
 
       {/* Day content — two columns on iPad / desktop, stacked on phones */}
-      <div className="grid gap-5 lg:grid-cols-3 items-start">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 items-start">
         {/* Main column: the reading + playing */}
         <div className="lg:col-span-2 space-y-4 min-w-0">
 
@@ -378,7 +378,7 @@ export default function DeadProgramPage() {
           })()}
         </div>
 
-        <div className="grid xl:grid-cols-2 gap-x-4">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4">
           {nfo.lesson.tabs.map((t, i) => (
             <TabBlock key={`w-${i}`} label={t.l} tab={t.t} />
           ))}
@@ -397,7 +397,7 @@ export default function DeadProgramPage() {
             </div>
           ))}
         </div>
-        <div className="grid xl:grid-cols-2 gap-x-4">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4">
           {nfo.dayTabs.map((t, i) => (
             <TabBlock key={i} label={t.l} tab={t.t} />
           ))}

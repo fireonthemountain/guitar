@@ -194,7 +194,7 @@ export default function Stage90ProgramPage() {
             onExit={() => setFocusMode(false)}
           />
         ) : (
-        <div className="grid gap-5 lg:grid-cols-3 items-start">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 items-start">
           {/* Main column */}
           <div className="lg:col-span-2 space-y-4 min-w-0">
             {/* Injected focus */}
@@ -240,7 +240,7 @@ export default function Stage90ProgramPage() {
             {/* Charts — this week's, plus the always-available core charts */}
             <div className="bg-gray-800 rounded-2xl p-4">
               <div className="text-teal-400 text-[10px] font-bold tracking-[2px] mb-1">THIS WEEK'S CHARTS</div>
-              <div className="grid xl:grid-cols-2 gap-x-4">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4">
                 {allCharts.map((t, i) => (
                   <TabBlock key={i} label={t.l} tab={t.t} />
                 ))}
