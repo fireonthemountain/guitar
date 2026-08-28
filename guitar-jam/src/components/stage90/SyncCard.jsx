@@ -47,12 +47,20 @@ export default function SyncCard() {
         </button>
       </div>
 
-      <input
-        value={cfg.url}
-        onChange={(e) => save({ ...cfg, url: e.target.value.trim() })}
-        placeholder="Worker URL (https://guitar-sync.….workers.dev)"
-        className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-gray-200 text-xs"
-      />
+      <div className="flex gap-1.5">
+        <input
+          value={cfg.url}
+          onChange={(e) => save({ ...cfg, url: e.target.value.trim() })}
+          placeholder="Sync URL (tap 'This site' to use the built-in one)"
+          className="flex-1 min-w-0 bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-gray-200 text-xs"
+        />
+        <button
+          onClick={() => { save({ ...cfg, url: `${window.location.origin}/api` }); setStatus('Using this site\'s built-in sync.'); }}
+          className="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-gray-700 text-gray-300 hover:bg-gray-600 flex-shrink-0"
+        >
+          This site
+        </button>
+      </div>
       <div className="flex gap-1.5">
         <input
           value={cfg.token}
@@ -82,7 +90,7 @@ export default function SyncCard() {
       <div className="text-gray-600 text-[10px] leading-snug">
         {cfg.enabled && ready
           ? <>Auto: pushes after every change, pulls at app launch. Last push {ago(cfg.lastPush)} · last pull {ago(cfg.lastPull)}. Last write wins — practice on one device at a time.</>
-          : <>Sync across phone / iPad / Mac. Setup takes ~10 min: see <span className="font-mono">sync-worker/README.md</span> in the repo.</>}
+          : <>Sync across phone / iPad / Mac. Easiest: tap "This site" (needs the free database linked once in Vercel — see <span className="font-mono">sync-worker/README.md</span>), Generate a token, and use the same token on every device.</>}
       </div>
       {status && <div className="text-teal-400 text-[11px]">{status}</div>}
     </div>
