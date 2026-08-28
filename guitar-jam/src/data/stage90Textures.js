@@ -71,6 +71,50 @@ A|--------------------------2--
 E|--0---0---0---0---0----------`,
     tip: 'Low E drones while the B string walks down, landing on B7 — the sound of the last two bars of every blues ever. Learn the first half slow; the B7 lands you back at the top of the form.',
   },
+  {
+    week: 5,
+    l: 'Forward roll on C — thumb, index, middle, ring',
+    t: `e|--------0---------0--
+B|------1---------1----
+G|----0---------0------
+D|---------------------
+A|--3---------3--------
+E|---------------------`,
+    tip: 'The second fingerpicking engine: bass note, then roll up one string at a time. Perfectly even beats fast — this is the sound of half the folk songbook.',
+  },
+  {
+    week: 7,
+    l: 'Bass + brush on G — alternating thumb, brushed chord',
+    t: `e|------3-------3--
+B|------0-------0--
+G|------0-------0--
+D|----------0------
+A|-----------------
+E|--3--------------`,
+    tip: 'Thumb alternates low G and open D; fingers brush the top strings between. The country/folk accompaniment engine — Johnny Cash runs on this.',
+  },
+  {
+    week: 9,
+    l: 'Reverse roll on Am — melody first, bass answers',
+    t: `e|--0-------0------
+B|----1-------1----
+G|------2-------2--
+D|-----------------
+A|--------0-------0
+E|-----------------`,
+    tip: 'Rolling top-down flips the ear\'s attention to the melody note. Alternate forward and reverse rolls on one chord and it starts sounding like an arrangement.',
+  },
+  {
+    week: 10,
+    l: 'Uptown turnaround — descending double stops (key of A)',
+    t: `e|--7---6---5---4------
+B|--8---7---6---5------
+G|---------------------
+D|---------------------
+A|---------------------
+E|------------------0--`,
+    tip: 'Two strings walking down together into the open E — the fancier cousin of your E turnaround. Drop it into the last two bars of any A blues.',
+  },
 ];
 
 export const texturesForWeek = (w) => TEXTURES.filter((x) => x.week <= w);

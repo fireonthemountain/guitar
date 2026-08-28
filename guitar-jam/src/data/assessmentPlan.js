@@ -7,7 +7,7 @@ export const GIG_TEMPO_TARGET = 90; // max-clean-BPM goal on the reference progr
 export const TEMPO_FLOOR = 40;      // where the tempo-test scale starts
 
 export const REFERENCE_PROGRESSION =
-  'G – D – Em – C, one bar each, strum pattern: D D DU DU. Raise the metronome until changes fall apart; log the last clean BPM.';
+  'G – D – Em – C, one bar each, strum pattern: D D DU DU. Raise the metronome +4 BPM after every three clean repetitions — stop where it frays and log the last clean BPM.';
 
 export const RATING_KEYS = [
   ['clean', 'Clean chords'],
