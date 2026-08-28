@@ -6,8 +6,9 @@ feeds into it or is kept as source material.
 **Live app: <https://guitar-one-blush.vercel.app/>** — hosted on Vercel, auto-deployed from
 `main` (root directory `guitar-jam`). Open it on any device and Add to Home Screen (it's a
 PWA). Optional login wall: Vercel project → Settings → Deployment Protection → Vercel
-Authentication. Progress syncs across devices once the [sync worker](sync-worker/) is set up;
-otherwise use the in-app Export/Import.
+Authentication. Progress syncs across devices via the built-in `/api/sync` endpoint —
+link a free Upstash Redis database once in Vercel (see [sync-worker/README.md](sync-worker/README.md)),
+then tap "This site" in the app's Cloud Sync card. Export/Import remains the manual fallback.
 
 ## Stage Ready 90 — the headline program
 
