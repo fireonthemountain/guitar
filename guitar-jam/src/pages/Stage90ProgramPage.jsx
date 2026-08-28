@@ -3,6 +3,8 @@ import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { STAGE90_WEEKS, STAGE90_TOTAL_DAYS, CORE_CHARTS } from '../data/stage90Curriculum';
 import { PHASES, phaseForWeek } from '../data/assessmentPlan';
 import { texturesForWeek, nextTexture } from '../data/stage90Textures';
+import { DAY_ROLES, COLOR_CHORDS, CAPO_CHART, CHORD_FAMILIES, NASHVILLE, LISTENING } from '../data/stage90Reference';
+import GroovePlayer from '../components/stage90/GroovePlayer';
 import TabBlock from '../components/guitar/TabBlock';
 import Metronome from '../components/guitar/Metronome';
 import VampPlayer from '../components/guitar/VampPlayer';
@@ -31,7 +33,7 @@ function blocksFor(day, remediation) {
     blocks.push(
       { n: 'Warmup', m: 5, d: 'Tone checks on the five open chords, then one change sprint on your slowest pair.' },
       { n: 'Focus', m: 25, d: 'Work today\'s numbered steps above.', main: true },
-      { n: 'Click work', m: 10, d: 'Strum pattern 2 on the metronome, then the reference progression (G–D–Em–C) until it locks.' },
+      { n: 'Click work', m: 10, d: 'Strum pattern 2 on the metronome, then the reference progression (G–D–Em–C). Rule: +4 BPM only after three clean repetitions.' },
     );
   } else if (w <= 9) {
     blocks.push(
@@ -45,6 +47,10 @@ function blocksFor(day, remediation) {
       { n: 'Set work', m: 30, d: 'Work today\'s numbered steps above — the set is the unit of practice now.', main: true },
       { n: 'Debrief', m: 10, d: 'Log the run (Set Runner in Songbook), note the worst bar, give it 8 slow reps.' },
     );
+  }
+  // The weekly cycle's Record day: a one-take two-minute performance on camera.
+  if (dayIdx(day) === 4) {
+    blocks.push({ n: 'Record', m: 5, d: 'Phone up: two minutes of this week\'s material, one take, no warm-up run. Watch it back once — that\'s the whole exercise.' });
   }
   return blocks;
 }
@@ -71,6 +77,7 @@ export default function Stage90ProgramPage() {
     return !d0.assessment && !state.program.completed.includes(day);
   });
   const [licksOpen, setLicksOpen] = useState(false);
+  const [theoryOpen, setTheoryOpen] = useState(false);
 
   useEffect(() => { saveStage90(state); }, [state]);
 
@@ -140,9 +147,11 @@ export default function Stage90ProgramPage() {
 
   // Week-specific charts first, then the core charts (open chords, strum
   // patterns, reference progression) — the steps name these on every day.
-  const allCharts = [...week.lesson.tabs, ...CORE_CHARTS].filter(
+  const allCharts = [...week.lesson.tabs, ...CORE_CHARTS, ...(w >= 3 ? [COLOR_CHORDS] : [])].filter(
     (t, i, arr) => arr.findIndex((x) => x.l === t.l) === i
   );
+  const role = DAY_ROLES[dayIdx(day)];
+  const listening = LISTENING[w];
 
   return (
     <PracticeContext.Provider value={practice}>
@@ -194,7 +203,7 @@ export default function Stage90ProgramPage() {
             blocks={blocks}
             steps={dd.assessment ? [] : dd.h}
             weekTabs={[...allCharts, ...texturesForWeek(w).slice(-2).map((x) => ({ l: x.l, t: x.t }))]}
-            dayLabel={`Day ${day} · Week ${w} — ${week.t}`}
+            dayLabel={`Day ${day} · Week ${w} — ${week.t} · ${DAY_ROLES[dayIdx(day)].name} day`}
             intro={dayIdx(day) === 0 ? { title: week.t, paragraphs: week.lesson.p } : null}
             onBlockDone={setBlockOn}
             onFinishDay={finishGuidedDay}
@@ -219,7 +228,13 @@ export default function Stage90ProgramPage() {
 
             {/* Today's focus */}
             <div className={`rounded-2xl p-4 ${dd.assessment ? 'bg-teal-950/40 border border-teal-600/60' : 'bg-gray-800'}`}>
-              <div className="text-rose-400 text-[10px] font-bold tracking-[2px] mb-1.5">TODAY · WEEK {w} — {week.t.toUpperCase()}</div>
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <div className="text-rose-400 text-[10px] font-bold tracking-[2px]">TODAY · WEEK {w} — {week.t.toUpperCase()}</div>
+                <span className="text-[10px] font-bold text-teal-300 bg-teal-900/50 border border-teal-700 rounded px-1.5 py-0.5 flex-shrink-0" title={role.hint}>
+                  {role.name.toUpperCase()} DAY
+                </span>
+              </div>
+              <div className="text-gray-500 text-[11px] -mt-1 mb-2">{role.hint}</div>
               <div className="text-white text-lg leading-snug mb-3" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>{dd.f}</div>
               <div className="space-y-2">
                 {dd.h.map((s, i) => (
@@ -244,6 +259,17 @@ export default function Stage90ProgramPage() {
                 </div>
               )}
             </div>
+
+            {/* This week's listening — one real song, one thing to hear */}
+            {listening && !dd.assessment && (
+              <div className="bg-gray-800/60 border border-gray-700 rounded-2xl p-3.5 flex gap-3 items-start">
+                <span className="text-lg flex-shrink-0">🎧</span>
+                <div className="min-w-0">
+                  <div className="text-white text-sm font-bold">{listening.song}</div>
+                  <div className="text-gray-400 text-xs leading-snug mt-0.5">{listening.focus}</div>
+                </div>
+              </div>
+            )}
 
             {/* Session blocks */}
             <div>
@@ -309,12 +335,35 @@ export default function Stage90ProgramPage() {
                 <span className="text-gray-400 text-lg leading-none">{chartsOpen ? '−' : '+'}</span>
               </button>
               {chartsOpen && (
-                <div className="px-4 pb-4">
+                <div className="px-4 pb-4 space-y-3">
+                  <GroovePlayer />
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-4">
                     {allCharts.map((t, i) => (
                       <TabBlock key={i} label={t.l} tab={t.t} />
                     ))}
                   </div>
+                </div>
+              )}
+            </div>
+
+            {/* Theory & capo */}
+            <div className="bg-gray-800/60 border border-gray-700 rounded-2xl overflow-hidden">
+              <button onClick={() => setTheoryOpen((o) => !o)} className="w-full flex justify-between items-center px-4 py-3.5 text-sm font-bold text-white text-left">
+                <span><span className="text-amber-400">Theory &amp; capo</span> · chord families, number system, capo chart</span>
+                <span className="text-gray-400 text-lg leading-none">{theoryOpen ? '−' : '+'}</span>
+              </button>
+              {theoryOpen && (
+                <div className="px-4 pb-4 space-y-3">
+                  {[
+                    ['THE SEVEN PROGRESSIONS · NASHVILLE NUMBERS', NASHVILLE],
+                    ['CHORD FAMILIES — THE SIX CHORDS OF EACH KEY', CHORD_FAMILIES],
+                    ['CAPO CHART — SAME SHAPES, NEW KEY', CAPO_CHART],
+                  ].map(([label, text]) => (
+                    <div key={label}>
+                      <div className="text-gray-500 text-[10px] font-bold tracking-[2px] mb-1">{label}</div>
+                      <pre className="bg-gray-950 border border-gray-700 rounded-lg p-3 text-gray-200 text-xs leading-relaxed overflow-x-auto font-mono">{text}</pre>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
