@@ -1,42 +1,43 @@
-# Sync backend — Cloudflare Worker + KV
+# Cross-device sync — a base DB + an identifier
 
-Auto-syncs your Stage Ready 90 progress (`stage90` data) across phone / iPad / Mac.
-Free tier is far more than enough (the blob is a few KB; free KV allows 100k reads/day).
+Your progress syncs as one JSON blob keyed by a secret token you generate in the
+app. The token is the entire "account": same token on every device = same data.
+Two interchangeable backends implement the same contract (`GET`/`PUT /sync/<token>`).
 
-## One-time setup (~10 minutes)
+## Option A (recommended) — built into the Vercel app
 
-1. **Create a free Cloudflare account** at https://dash.cloudflare.com/sign-up (no card needed).
-2. On any machine with Node:
-   ```bash
-   cd sync-worker
-   npx wrangler login                          # opens browser, authorize
-   npx wrangler kv namespace create SYNC_KV   # prints an id
-   ```
-3. Paste the printed `id` into `wrangler.toml` (replacing `PASTE_YOUR_KV_NAMESPACE_ID_HERE`).
-4. Deploy:
-   ```bash
-   npx wrangler deploy
-   ```
-   It prints your Worker URL, e.g. `https://guitar-sync.<your-subdomain>.workers.dev`.
+The API route already ships with the app (`guitar-jam/api/sync/[token].js`).
+One-time setup, all inside the Vercel dashboard:
 
-## Connect the app
+1. Vercel → your **guitar** project → **Storage** → **Create Database** →
+   **Upstash Redis** (free tier) → connect it to the project.
+2. **Redeploy** (Deployments → ⋯ → Redeploy) so the function picks up the
+   database credentials.
 
-On **each** device, open the app → **Assessment tab → Cloud sync** card:
+Then in the app on each device: **Assessment tab → Cloud Sync** →
+tap **"This site"** → on the first device tap **Generate** and save the token
+somewhere safe → paste the same token on the other devices → ON.
 
-1. Paste the Worker URL.
-2. On the FIRST device: tap **Generate** to create a secret sync token, then copy it
-   somewhere safe (it's the only key to your data — anyone with it can read/write it).
-3. On the other devices: paste the SAME token.
-4. Enable sync.
+No extra accounts, no CORS, no separate deploy — the app syncs to itself.
 
-From then on every change pushes automatically (debounced a few seconds), and each
-app launch pulls the latest before rendering. Conflict rule: **last write wins** —
-practice on one device at a time and you'll never notice.
+## Option B — standalone Cloudflare Worker
 
-## Notes
+Same contract, hosted on a free Cloudflare account instead:
 
-- The token in the URL path is the whole auth model. It's fine for a single-user
-  personal app; don't share the token or the data becomes shared.
-- To rotate the token: generate a new one on one device, re-enter it on the others.
-  The old blob just goes stale in KV.
+```bash
+cd sync-worker
+npx wrangler login
+npx wrangler kv namespace create SYNC_KV   # paste the printed id into wrangler.toml
+npx wrangler deploy                         # prints your Worker URL
+```
+
+In the app, paste the Worker URL instead of tapping "This site".
+
+## Behavior (both options)
+
+- Every change pushes automatically (3 s debounce); every app launch pulls the
+  latest before rendering. Conflict rule: **last write wins** — practice on one
+  device at a time.
+- The token in the URL path is the auth. Treat it like a password; rotating it
+  = generating a new one and re-entering it everywhere.
 - Nothing else is stored: no account, no analytics, one JSON blob per token.
