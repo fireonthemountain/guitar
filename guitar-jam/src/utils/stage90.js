@@ -3,6 +3,7 @@
 
 import { ASSESSMENT_WEEKS, GIG_TEMPO_TARGET, TEMPO_FLOOR, RATING_KEYS } from '../data/assessmentPlan';
 import { initializeStage90IndexedDb, queueStage90Snapshot } from './stage90IndexedDb';
+import { emptyGym, normalizeGym } from './practiceEngine';
 
 export const STAGE90_KEY = 'stage90';
 export const STAGE90_BACKUP_KEY = 'stage90-backup';
@@ -18,6 +19,7 @@ const EMPTY = {
   set: [],      // My Set: [{id, title, chords, bpm, minutes}]
   setruns: [],  // Set Runner logs
   jams: [],     // Jam Along library
+  gym: emptyGym(), // Train tab: tempo ladders, benchmarks, spaced review
 };
 
 export const emptyStage90 = () => JSON.parse(JSON.stringify(EMPTY));
@@ -47,6 +49,7 @@ export function normalizeStage90(value) {
     set: Array.isArray(parsed.set) ? parsed.set : [],
     setruns: Array.isArray(parsed.setruns) ? parsed.setruns : [],
     jams: Array.isArray(parsed.jams) ? parsed.jams : [],
+    gym: normalizeGym(parsed.gym),
   };
 }
 
