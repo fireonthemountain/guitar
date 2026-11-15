@@ -28,6 +28,13 @@ struct TouchCal {
 };
 TouchCal cal;
 
+// Calibration depends on rotation, so each rotation gets its own NVS key.
+const char *calKey() {
+  static char key[8];
+  snprintf(key, sizeof(key), "cal%d", CYD_ROTATION);
+  return key;
+}
+
 struct Button {
   int16_t x, y, w, h;
   uint16_t color;
@@ -105,7 +112,7 @@ void calibrateTouch() {
   cal.yMin = a.y - yPerPx * m;
   cal.yMax = b.y + yPerPx * m;
 
-  prefs.putBytes("cal", &cal, sizeof(cal));
+  prefs.putBytes(calKey(), &cal, sizeof(cal));
   Serial.printf("Calibration saved: xMin=%d xMax=%d yMin=%d yMax=%d\n",
                 cal.xMin, cal.xMax, cal.yMin, cal.yMax);
 }
@@ -198,17 +205,20 @@ void setup() {
   ts.setRotation(CYD_ROTATION);
 
   prefs.begin("cyd-demo", false);
-  if (prefs.getBytesLength("cal") == sizeof(cal)) {
-    prefs.getBytes("cal", &cal, sizeof(cal));
+  if (prefs.getBytesLength(calKey()) == sizeof(cal)) {
+    prefs.getBytes(calKey(), &cal, sizeof(cal));
     Serial.println("Loaded saved touch calibration");
   }
+  // The last chosen background survives power loss (NVS lives in flash).
+  background = prefs.getUShort("bg", TFT_BLACK);
+  Serial.printf("Loaded background 0x%04X\n", background);
 
   // Splash: hold a finger down here to (re)calibrate.
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.setTextDatum(MC_DATUM);
   tft.drawString("CYD Touch Demo", tft.width() / 2, tft.height() / 2 - 14, 4);
-  tft.drawString("Hold screen now to calibrate touch", tft.width() / 2, tft.height() / 2 + 18, 2);
+  tft.drawString("Hold screen to calibrate touch", tft.width() / 2, tft.height() / 2 + 18, 2);
   uint32_t start = millis();
   bool wantCal = false;
   while (millis() - start < 2000) {
@@ -252,6 +262,7 @@ void loop() {
     // Act on release, like a normal button.
     Serial.printf("Button %s -> background\n", buttons[pressedButton].label);
     background = backgroundFor(pressedButton);
+    prefs.putUShort("bg", background);
     pressedButton = -1;
     drawScreen();
   }
