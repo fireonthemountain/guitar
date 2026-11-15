@@ -1,0 +1,4 @@
+.pio/
+.vscode/
+# Your Wi-Fi password and home location
+include/config.h
