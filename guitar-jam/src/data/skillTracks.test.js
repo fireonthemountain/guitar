@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import dead90 from './curriculum.json';
+import fingerstyleDraft from '../../content/drafts/beginner-fingerstyle.draft.json';
 import { SKILL_TRACKS, tab } from './skillTracks';
 import { STAGE90_WEEKS } from './stage90Curriculum';
 import { parseTab } from '../utils/tabParser';
@@ -54,6 +55,20 @@ describe('curriculum data validates against its schemas', () => {
     expect(published).toMatch(/unreviewed source reference/);
     expect(published).toMatch(/still marked unverified/);
     expect(validateCourses(draft, { requireReviewedSources: false })).toEqual([]);
+  });
+});
+
+describe('Beginner Fingerstyle pilot draft', () => {
+  it('is a valid draft, and cannot be published until every example is reviewed', () => {
+    expect(validateCourses(fingerstyleDraft, { requireReviewedSources: false, parseTab })).toEqual([]);
+    const asPublished = validateCourses(fingerstyleDraft, { parseTab });
+    const exercises = flattenExercises(fingerstyleDraft);
+    expect(asPublished.filter((e) => /still marked unverified/.test(e))).toHaveLength(exercises.length);
+    expect(exercises.every((e) => e.unverified === true && !e.tablature)).toBe(true);
+  });
+
+  it('is not part of the published skill tracks', () => {
+    expect(SKILL_TRACKS.courses.map((c) => c.id)).toEqual(['electric-technique', 'acoustic-technique']);
   });
 });
 

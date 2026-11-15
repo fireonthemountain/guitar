@@ -48,6 +48,53 @@ trusted to infer all guitar techniques or rhythm from every screenshot. If a lab
 tab grid cannot be recognized, the app supplies a clean editable six-string template.
 Saved imports can be edited, practiced or deleted from the same screen.
 
+## Train: the skill gym
+
+The **Train** tab is where technique gets measurably better. It is separate from the
+day-by-day programs and works for both instruments:
+
+- **Electric track**: alternate picking, legato, bends to pitch, vibrato, palm and
+  fretting-hand muting, tone and amp control.
+- **Acoustic track**: p-i-m-a fingerstyle, Travis picking, strumming dynamics, open
+  chord and barre changes, capo transposition, voice-leading.
+
+How a session works:
+
+1. Pick Electric, Acoustic or Both and a length (15 to 60 minutes). The queue is built
+   for you: due reviews first, then the weakest in-progress items, then at most two new
+   exercises. Every item shows why it was chosen.
+2. Each exercise runs on a **tempo ladder**. Play a pass, grade it Clean, Shaky or
+   Missed. Enough clean passes in a row and the click steps up; two misses and it steps
+   down. Your **best clean BPM** is the benchmark.
+3. Reaching the target tempo moves the exercise to **spaced review** (3, 7, 15, 33...
+   days), and a failed review brings it back the next day.
+4. **Benchmarks** shows best clean tempo against target for every exercise, progress per
+   skill area for each instrument, four weeks of repetitions, and what is weakest now.
+
+Optional **mic checks** (nothing is uploaded or stored):
+
+| Check | What it measures |
+|-------|------------------|
+| Tuner | Note name and cents, always on while the mic is on |
+| Timing | Note onsets against the click: steadiness (ms spread), percent in the pocket, and rushing or dragging after a one-time delay calibration |
+| Bend | Cents from the target pitch; counts bends held in tune for half a second |
+| Vibrato | Rate, width, evenness, and whether each pulse returns to pitch |
+| Record a take | Record and listen straight back |
+
+The mic needs a secure page. It works on the Vercel site (https) and on
+`http://localhost`. For a phone or another computer on the LAN use `npm run dev:https`
+and open `https://<this-mac's-LAN-IP>:5173` (accept the self-signed certificate once).
+Wear headphones for the click while using the timing check, otherwise the mic hears the
+click as notes.
+
+Train progress is stored inside the same saved blob as Stage Ready 90, so it is covered
+by the same backup, export/import and cloud sync.
+
+Content lives in `src/data/skillTracks.js` in the shape of
+`content/curriculum.schema.json`. `npm run validate:curriculum` checks it, plus the
+Dead 90 and Stage Ready 90 week data (`content/program-weeks.schema.json`) and any
+drafts in `content/drafts/`. The same checks run in `npm test`.
+
 ## The headline feature: playable tabs
 
 Every ASCII tab in the curriculum is parsed into notes (`src/utils/tabParser.js`) and rendered by `TabBlock`:
@@ -69,6 +116,9 @@ diagrams.
 ```bash
 npm install
 npm run dev       # http://localhost:5173 (exposed on the LAN via host:true)
+npm run dev:https # same, over https - needed for the mic from other LAN devices
+npm test          # vitest
+npm run validate:curriculum
 npm run build     # -> dist/, static-hostable
 npm run preview
 ```

@@ -258,11 +258,13 @@ export default function ListenPanel({ exercise, bpm, metronome, onSuggest }) {
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                     <Stat label="Steadiness" value={timing.grade} tone={GRADE_STYLE[timing.grade]} hint={`±${timing.spreadMs} ms spread`} />
                     <Stat label="In the pocket" value={`${timing.inPocketPct}%`} hint={`within ${timing.windowMs} ms`} />
-                    <Stat label="Tendency" value={timing.tendency} hint={`${timing.biasMs > 0 ? '+' : ''}${timing.biasMs} ms${latency == null ? ' (uncalibrated)' : ''}`} />
+                    {latency == null
+                      ? <Stat label="Tendency" value="–" tone="text-gray-500" hint="calibrate delay to measure" />
+                      : <Stat label="Tendency" value={timing.tendency} hint={`${timing.biasMs > 0 ? '+' : ''}${timing.biasMs} ms`} />}
                     <Stat label="Notes heard" value={timing.count} hint={`at ${bpm} BPM`} />
                   </div>
                   <p className="text-[11px] leading-relaxed text-gray-500">
-                    Steadiness is the number to trust: it does not depend on device delay. Tendency (rushing or dragging) needs calibration to be exact.
+                    Steadiness is the number to trust: it does not depend on device delay. Rushing or dragging is only shown after a one-time delay calibration on this device.
                   </p>
                 </>
               )}
