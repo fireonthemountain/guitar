@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   BarChart3,
   BookOpen,
+  Dumbbell,
   Eye,
   GraduationCap,
   Home,
@@ -22,12 +23,14 @@ import JamAlongPage from './pages/JamAlongPage';
 import LibraryPage from './pages/LibraryPage';
 import DesignPreviewPage from './pages/DesignPreviewPage';
 import CoursesPage from './pages/CoursesPage';
+import TrainPage from './pages/TrainPage';
 import { getMasterVolume, setMasterVolume, armAudioUnlock } from './utils/audioEngine';
 import { STAGE90_STORAGE_EVENT } from './utils/stage90';
 import { getLastSyncStatus, isSyncConfigured, STAGE90_SYNC_EVENT } from './utils/syncClient';
 
 const PRIMARY_VIEWS = [
   { id: 'program', label: 'Today', icon: Home },
+  { id: 'train', label: 'Train', icon: Dumbbell },
   { id: 'songbook', label: 'Songs', icon: Music2 },
   { id: 'courses', label: 'Courses', icon: GraduationCap },
   { id: 'import', label: 'Library', icon: LibraryIcon },
@@ -233,7 +236,8 @@ export default function App() {
         </aside>
 
         <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 px-4 pb-24 pt-5 sm:px-5 sm:pt-6 md:pb-8 lg:px-8">
-          {view === 'program' && <ProgramPage onOpenCourses={() => pick('courses')} />}
+          {view === 'program' && <ProgramPage onOpenCourses={() => pick('courses')} onOpenTrain={() => pick('train')} />}
+          {view === 'train' && <TrainPage />}
           {view === 'assessment' && <AssessmentPage />}
           {view === 'jam' && <JamAlongPage />}
           {view === 'songbook' && <SongbookPage />}
@@ -245,7 +249,7 @@ export default function App() {
       </div>
 
       <nav aria-label="Primary" className="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-gray-700 bg-gray-900/95 px-1 pb-1 pt-1 backdrop-blur md:hidden">
-        <div className="mx-auto flex max-w-lg items-stretch">
+        <div className="mx-auto flex max-w-xl items-stretch">
           {PRIMARY_VIEWS.map((item) => <MobileNavItem key={item.id} item={item} active={view === item.id} onSelect={pick} />)}
         </div>
       </nav>
