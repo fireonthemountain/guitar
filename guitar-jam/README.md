@@ -31,6 +31,23 @@ engine woven through it. Each day, top to bottom:
 Global **volume** lives in the header; everything (notes, chords, metronome) routes
 through one master gain.
 
+## Screenshot to Practice
+
+The **Import** tab provides a complete local-first workflow for turning a screenshot
+into a private playable exercise:
+
+1. Choose, photograph, or drag in a music image (15 MB maximum).
+2. Run Tesseract OCR in the browser. The OCR runtime/language data may download on
+   first use, but the app does not upload the source image to an application server.
+3. Compare the proposed six-string ASCII tab with the source and correct every fret.
+4. Play the preview, set the starting tempo and add practice notes.
+5. Save the image, extraction metadata and reviewed tab together in IndexedDB.
+
+Recognition is deliberately review-first: OCR can propose characters but cannot be
+trusted to infer all guitar techniques or rhythm from every screenshot. If a labeled
+tab grid cannot be recognized, the app supplies a clean editable six-string template.
+Saved imports can be edited, practiced or deleted from the same screen.
+
 ## The headline feature: playable tabs
 
 Every ASCII tab in the curriculum is parsed into notes (`src/utils/tabParser.js`) and rendered by `TabBlock`:
@@ -56,10 +73,11 @@ npm run build     # -> dist/, static-hostable
 npm run preview
 ```
 
-Deploy: static host (`dist/`), or the included `Dockerfile` + `nginx.conf`. Progress for
-both modes lives in `localStorage` (the 90-day program reuses the `dead90` key, so progress
-from the standalone dead90 app carries over). The program's Export/Import buttons move
-progress between devices.
+Deploy: static host (`dist/`), or the included `Dockerfile` + `nginx.conf`. Stage Ready
+progress is written to IndexedDB with a `localStorage` compatibility/backup copy and an
+optional token-based cloud-sync mechanism. Screenshot exercises and their private source
+images are stored in IndexedDB on the current browser; account-based library sync is not
+yet enabled. The program's JSON Export/Import buttons provide a manual progress backup.
 
 ## Known caveat
 
