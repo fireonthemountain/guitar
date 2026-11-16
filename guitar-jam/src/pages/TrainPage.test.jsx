@@ -77,6 +77,28 @@ describe('Train page', () => {
     expect(stored().gym.sessions[0]).toMatchObject({ items: 1, clean: 3, total: 5 });
   });
 
+  it('keeps tempo, click and grading in a sticky bar for phones, wired to the same ladder', async () => {
+    await render();
+    await click('Electric');
+    await click('Start session');
+    const bar = host.querySelector('[data-testid="runner-action-bar"]');
+    expect(bar.className).toContain('sticky');
+    expect(bar.className).toContain('lg:hidden'); // the two-column card takes over on desktop
+    expect(host.querySelector('[data-testid="runner-desktop-controls"]').className).toContain('lg:block');
+    const inBar = (label) => [...bar.querySelectorAll('button')].find((b) => (b.getAttribute('aria-label') || b.textContent).includes(label));
+    for (const label of ['Start click at 60', 'Clean', 'Shaky', 'Missed', 'Next exercise']) expect(inBar(label), label).toBeTruthy();
+    // every control in the bar is a full-size tap target (44px or more)
+    for (const b of bar.querySelectorAll('button')) expect(b.className).toMatch(/min-h-(12|\[3\.25rem\])/);
+
+    for (let i = 0; i < 3; i++) await act(async () => { inBar('Clean').dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+    expect(bar.textContent).toContain('Clean. Up to 64 BPM.');
+    expect(bar.textContent).toContain('64');
+    expect(stored().gym.items['e-ap-single-string']).toMatchObject({ bpm: 64, bestCleanBpm: 60, reps: 3 });
+
+    await act(async () => { inBar('Next exercise').dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+    expect(host.textContent).toContain('2 of 5');
+  });
+
   it('keeps existing program progress intact while training', async () => {
     localStorage.setItem(STAGE90_KEY, JSON.stringify({ startDate: '2026-09-01', program: { completed: [1, 2, 3] } }));
     await render();

@@ -19,6 +19,18 @@ const EVENT_TEXT = {
 
 const KIND_LABEL = { review: 'Review', ladder: 'Ladder', new: 'New' };
 
+const GRADES = [
+  ['clean', 'Clean', Check, 'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-500'],
+  ['shaky', 'Shaky', Minus, 'bg-amber-600 hover:bg-amber-500 active:bg-amber-500'],
+  ['miss', 'Missed', X, 'bg-rose-700 hover:bg-rose-600 active:bg-rose-600'],
+];
+
+function StreakDots({ need, filled, size = 'h-3 w-3' }) {
+  return Array.from({ length: need }, (_, i) => (
+    <span key={i} className={`${size} shrink-0 rounded-full ${i < filled ? 'bg-emerald-400' : 'bg-gray-600'}`} />
+  ));
+}
+
 export default function ExerciseRunner({ entry, item: itemIn, position, total, suggestedMinutes = 5, onRep, onNext, onExit, isLast }) {
   const { exercise } = entry;
   const item = itemIn || newItem(exercise);
@@ -63,12 +75,12 @@ export default function ExerciseRunner({ entry, item: itemIn, position, total, s
           ))}
         </div>
         <span className="shrink-0 text-xs text-gray-500">{position + 1} of {total}</span>
-        <button type="button" onClick={() => { metronome.stop(); onExit(bout); }} className="shrink-0 rounded-lg p-1 text-gray-500 hover:text-gray-200" aria-label="End session"><X size={18} /></button>
+        <button type="button" onClick={() => { metronome.stop(); onExit(bout); }} className="-my-2 -mr-2 grid h-11 w-11 shrink-0 place-items-center rounded-lg text-gray-500 hover:text-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400" aria-label="End session"><X size={18} /></button>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)]">
         {/* What to play */}
-        <div className="min-w-0 space-y-4 rounded-2xl border border-gray-700 bg-gray-800 p-5">
+        <div className="min-w-0 space-y-4 rounded-2xl border border-gray-700 bg-gray-800 p-4 sm:p-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="text-[10px] font-bold uppercase tracking-[2px] text-teal-400">
@@ -102,9 +114,10 @@ export default function ExerciseRunner({ entry, item: itemIn, position, total, s
           )}
         </div>
 
-        {/* Tempo, grading, mic */}
+        {/* Tempo, grading, mic. On a phone the tempo and grade controls live in
+            the sticky bar below instead, so this card is desktop-only. */}
         <div className="min-w-0 space-y-4">
-          <div className="space-y-4 rounded-2xl border border-gray-700 bg-gray-800 p-5">
+          <div className="hidden space-y-4 rounded-2xl border border-gray-700 bg-gray-800 p-5 lg:block" data-testid="runner-desktop-controls">
             {ladder ? (
               <>
                 <div className="flex items-end justify-between gap-3">
@@ -150,11 +163,7 @@ export default function ExerciseRunner({ entry, item: itemIn, position, total, s
             <div>
               <div className="mb-2 text-[10px] font-bold uppercase tracking-[2px] text-gray-500">Grade the pass you just played</div>
               <div className="grid grid-cols-3 gap-2">
-                {[
-                  ['clean', 'Clean', Check, 'bg-emerald-600 hover:bg-emerald-500'],
-                  ['shaky', 'Shaky', Minus, 'bg-amber-600 hover:bg-amber-500'],
-                  ['miss', 'Missed', X, 'bg-rose-700 hover:bg-rose-600'],
-                ].map(([id, label, Icon, style]) => (
+                {GRADES.map(([id, label, Icon, style]) => (
                   <button key={id} type="button" onClick={() => grade(id)} className={`flex min-h-14 flex-col items-center justify-center gap-0.5 rounded-xl text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${style} ${suggested === id ? 'ring-2 ring-white' : ''}`}>
                     <Icon size={18} aria-hidden="true" />{label}
                   </button>
@@ -175,6 +184,59 @@ export default function ExerciseRunner({ entry, item: itemIn, position, total, s
           </div>
 
           <ListenPanel exercise={exercise} bpm={bpm} metronome={metronome} onSuggest={handleSuggest} />
+        </div>
+      </div>
+
+      {/* Phone and tablet: tempo, click and grading stay on screen, in thumb
+          reach, while the instructions and tab scroll above. */}
+      <div className="train-action-bar sticky z-30 -mx-1.5 rounded-2xl border border-gray-600 bg-gray-800/95 p-2.5 shadow-2xl shadow-black/70 backdrop-blur lg:hidden" role="group" aria-label="Tempo and grading" data-testid="runner-action-bar">
+        {noticeText
+          ? <p className={`mb-2 px-1 text-xs font-semibold leading-snug ${noticeText.tone}`} role="status">{noticeText.text}</p>
+          : suggested
+            ? <p className="mb-2 px-1 text-xs text-gray-400">Mic suggests: {suggested}. You decide.</p>
+            : bout.total > 0 && <p className="mb-2 px-1 text-xs text-gray-500">This sitting: <span className="font-bold text-gray-300">{bout.clean}</span> clean of {bout.total}</p>}
+        <div className="flex items-center gap-2">
+          <div className="min-w-0 flex-1 px-1">
+            {ladder ? (
+              <>
+                <div className="flex items-baseline gap-1.5 leading-none">
+                  <span className="text-3xl font-bold tabular-nums text-white">{bpm}</span>
+                  <span className="text-xs font-semibold text-gray-500">BPM</span>
+                  <span className="ml-1 flex gap-1" aria-hidden="true">
+                    {[0, 1, 2, 3].map((b) => <span key={b} className={`h-2 w-2 rounded-full ${metronome.beat === b ? (b === 0 ? 'bg-amber-400' : 'bg-teal-400') : 'bg-gray-600'}`} />)}
+                  </span>
+                </div>
+                <div className="mt-1.5 flex items-center gap-1 text-[11px] text-gray-400" aria-label={`${item.cleanStreak} of ${need} clean passes at this tempo, target ${target}`}>
+                  <StreakDots need={need} filled={item.cleanStreak} size="h-2.5 w-2.5" />
+                  <span className="ml-1 truncate">target {target}</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="text-[10px] font-bold uppercase tracking-[1.5px] text-gray-500">Clean in a row</div>
+                <div className="mt-1.5 flex items-center gap-1 text-[11px] text-gray-400">
+                  <StreakDots need={need} filled={item.masteredAt ? need : item.cleanStreak} />
+                  <span className="ml-1 truncate">{need} to complete</span>
+                </div>
+              </>
+            )}
+          </div>
+          {ladder && (
+            <button type="button" onClick={metronome.toggle} aria-label={metronome.running ? 'Stop click' : `Start click at ${bpm}`} aria-pressed={metronome.running} className={`flex min-h-12 min-w-[5.5rem] shrink-0 items-center justify-center gap-1.5 rounded-xl px-3 text-sm font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 ${metronome.running ? 'bg-gray-600 text-gray-100' : 'bg-teal-600 text-white'}`}>
+              {metronome.running ? <Pause size={17} aria-hidden="true" /> : <Play size={17} aria-hidden="true" />}
+              {metronome.running ? 'Stop' : 'Click'}
+            </button>
+          )}
+          <button type="button" onClick={finish} aria-label={isLast ? 'Finish session' : 'Next exercise'} className="flex min-h-12 min-w-[5rem] shrink-0 items-center justify-center gap-1 rounded-xl bg-gray-700 px-3 text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
+            {isLast ? 'Finish' : 'Next'} <ArrowRight size={16} aria-hidden="true" />
+          </button>
+        </div>
+        <div className="mt-2 grid grid-cols-3 gap-2">
+          {GRADES.map(([id, label, Icon, style]) => (
+            <button key={id} type="button" onClick={() => grade(id)} className={`flex min-h-[3.25rem] items-center justify-center gap-1.5 rounded-xl text-[15px] font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${style} ${suggested === id ? 'ring-2 ring-white' : ''}`}>
+              <Icon size={18} aria-hidden="true" />{label}
+            </button>
+          ))}
         </div>
       </div>
     </div>

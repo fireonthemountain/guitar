@@ -248,8 +248,8 @@ export default function App() {
         </main>
       </div>
 
-      <nav aria-label="Primary" className="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-gray-700 bg-gray-900/95 px-1 pb-1 pt-1 backdrop-blur md:hidden">
-        <div className="mx-auto flex max-w-xl items-stretch">
+      <nav aria-label="Primary" className="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-gray-700 bg-gray-900/95 px-1 backdrop-blur md:hidden">
+        <div className="mx-auto flex h-[var(--mobile-nav-h)] max-w-xl items-stretch py-1">
           {PRIMARY_VIEWS.map((item) => <MobileNavItem key={item.id} item={item} active={view === item.id} onSelect={pick} />)}
         </div>
       </nav>
