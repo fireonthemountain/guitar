@@ -159,6 +159,14 @@ describe('session builder', () => {
     expect(new Set(acoustic.map((s) => s.exercise.id)).size).toBe(acoustic.length);
   });
 
+  it('keeps a slot for in-progress work in a short session instead of filling it with new material', () => {
+    const started = recordRep(null, picking, 'shaky', '2026-11-14').item;
+    const session = buildSession({ exercises, items: { [picking.id]: started }, instrument: 'both', minutes: 10, today: TODAY });
+    expect(session).toHaveLength(2);
+    expect(session.filter((s) => s.kind === 'ladder').map((s) => s.exercise.id)).toEqual([picking.id]);
+    expect(session.filter((s) => s.kind === 'new')).toHaveLength(1);
+  });
+
   it('does not offer a locked exercise until the one before it has been practiced', () => {
     const before = buildSession({ exercises, items: {}, instrument: 'electric', minutes: 60, today: TODAY });
     expect(before.some((s) => s.exercise.id === 'e-ap-string-crossing')).toBe(false);

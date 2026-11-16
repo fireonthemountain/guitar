@@ -274,7 +274,9 @@ export function buildSession({ exercises, items = {}, instrument = 'both', minut
   const take = (queue, n) => { while (n-- > 0 && queue.length && picked.length < slots) picked.push(queue.shift()); };
   take(reviewQ, Math.max(1, Math.floor(slots / 3)));
   const newCap = ladderQ.length >= slots ? 1 : 2;
-  take(ladderQ, Math.max(0, slots - picked.length - Math.min(newCap, freshQ.length)));
+  // Work already in progress always keeps at least one slot: in a short session
+  // (Today's 10–15 minute technique block) new material must not starve it.
+  take(ladderQ, Math.max(ladderQ.length ? 1 : 0, slots - picked.length - Math.min(newCap, freshQ.length)));
   take(freshQ, newCap);
   // Fill any slack from whatever is left, most useful first.
   take(ladderQ, slots);
