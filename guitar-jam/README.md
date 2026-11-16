@@ -71,6 +71,20 @@ How a session works:
 4. **Benchmarks** shows best clean tempo against target for every exercise, progress per
    skill area for each instrument, four weeks of repetitions, and what is weakest now.
 
+Train is wired into the rest of the Practice Desk:
+
+- **Today** (Stage Ready 90) ends its practice queue with a **Technique · Train** block:
+  the same queue with its reasons, sized to what is left of a 60-minute day (10 to 20
+  minutes, never more than the Train session length). *Start technique* opens the runner
+  on that queue; graded reps tick the block off and count the day as practiced. Nothing
+  extra is stored for this, it is read from the Train log.
+- **Progress** shows **Technique this week** beside the G-D-Em-C tempo test: best clean
+  BPM now against last week for each instrument, reviews passed and failed, and the
+  weakest items. Saving a weekly assessment freezes that report into the record
+  (`assessments[week].train`); the score is unchanged and older records without it still load.
+- On a phone the runner keeps BPM, click start/stop, Clean / Shaky / Missed and Next in a
+  sticky bar above the tab bar, so grading a pass never needs a scroll.
+
 Optional **mic checks** (nothing is uploaded or stored):
 
 | Check | What it measures |

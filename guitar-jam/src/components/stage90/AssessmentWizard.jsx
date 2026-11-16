@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Metronome from '../guitar/Metronome';
+import TrainWeekCard from '../train/TrainWeekCard';
 import { RATING_KEYS, REFERENCE_PROGRESSION, GIG_TEMPO_TARGET } from '../../data/assessmentPlan';
 
 const defaultRatings = (existing) =>
@@ -22,7 +23,7 @@ const RATING_HINTS = {
   recovery: 'A flub costs you a beat, not the song',
 };
 
-export default function AssessmentWizard({ week, plan, existing, onSave, onCancel }) {
+export default function AssessmentWizard({ week, plan, existing, trainReport = null, onSave, onCancel }) {
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState(() => ({
     week,
@@ -40,6 +41,10 @@ export default function AssessmentWizard({ week, plan, existing, onSave, onCance
   const finish = () => {
     const record = { ...draft, maxCleanBpm: Number(draft.maxCleanBpm) || 0 };
     record.score = assessmentScore(record, plan);
+    // Freeze this week's Train results with the record so history can show them.
+    // Optional: the score does not use it, and records saved without it stay valid.
+    if (trainReport) record.train = trainReport;
+    else if (existing?.train) record.train = existing.train;
     onSave(record);
   };
 
@@ -120,6 +125,12 @@ export default function AssessmentWizard({ week, plan, existing, onSave, onCance
             />
             <span className="text-gray-500 text-xs">gig goal: {GIG_TEMPO_TARGET}</span>
           </div>
+          {trainReport && (
+            <>
+              <p className="pt-1 text-xs text-gray-400">That is one number on one progression. The tempo ladders in Train measured the rest of this week, and are saved with this assessment:</p>
+              <TrainWeekCard report={trainReport} compact />
+            </>
+          )}
         </div>
       )}
 
