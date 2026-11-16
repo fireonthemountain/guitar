@@ -30,7 +30,7 @@ export default function ProgramPage({ onOpenCourses, onOpenTrain }) {
           <div className="truncate text-sm font-bold text-gray-200">{currentTrack.label} <span className="font-normal text-gray-500">· {currentTrack.sub}</span></div>
         </div>
         {onOpenTrain && (
-          <button type="button" onClick={onOpenTrain} className="ml-auto flex shrink-0 items-center gap-1.5 rounded-lg border border-teal-800 bg-teal-950/40 px-3 py-2 text-xs font-semibold text-teal-200 hover:border-teal-600">
+          <button type="button" onClick={() => onOpenTrain()} className="ml-auto flex shrink-0 items-center gap-1.5 rounded-lg border border-teal-800 bg-teal-950/40 px-3 py-2 text-xs font-semibold text-teal-200 hover:border-teal-600">
             <Dumbbell size={15} aria-hidden="true" /> Technique session
           </button>
         )}
@@ -40,7 +40,7 @@ export default function ProgramPage({ onOpenCourses, onOpenTrain }) {
           </button>
         )}
       </div>
-      {track === 'stage90' ? <Stage90ProgramPage /> : <DeadProgramPage />}
+      {track === 'stage90' ? <Stage90ProgramPage onOpenTrain={onOpenTrain} /> : <DeadProgramPage />}
     </div>
   );
 }

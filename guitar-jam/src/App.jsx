@@ -144,8 +144,12 @@ export default function App() {
     return VIEWS.some((v) => v.id === saved) ? saved : 'program';
   });
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
-  const pick = (id) => {
+  // Set when Today hands off to Train ("run today's technique block"); any
+  // ordinary navigation clears it so Train opens on its own queue again.
+  const [trainIntent, setTrainIntent] = useState(null);
+  const pick = (id, intent = null) => {
     if (!VIEWS.some((item) => item.id === id)) return;
+    setTrainIntent(id === 'train' ? intent : null);
     setView(id);
     setMobileToolsOpen(false);
     localStorage.setItem('guitar-jam-view', id);
@@ -236,9 +240,9 @@ export default function App() {
         </aside>
 
         <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 px-4 pb-24 pt-5 sm:px-5 sm:pt-6 md:pb-8 lg:px-8">
-          {view === 'program' && <ProgramPage onOpenCourses={() => pick('courses')} onOpenTrain={() => pick('train')} />}
-          {view === 'train' && <TrainPage />}
-          {view === 'assessment' && <AssessmentPage />}
+          {view === 'program' && <ProgramPage onOpenCourses={() => pick('courses')} onOpenTrain={(intent) => pick('train', intent || null)} />}
+          {view === 'train' && <TrainPage intent={trainIntent} onBackToToday={() => pick('program')} />}
+          {view === 'assessment' && <AssessmentPage onOpenTrain={() => pick('train')} />}
           {view === 'jam' && <JamAlongPage />}
           {view === 'songbook' && <SongbookPage />}
           {view === 'courses' && <CoursesPage onOpenCourse={() => pick('program')} />}

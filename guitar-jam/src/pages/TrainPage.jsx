@@ -6,6 +6,7 @@ import {
   instrumentSummary, localDateKey, MINUTES_PER_ITEM,
 } from '../utils/practiceEngine';
 import { loadGym, updateGym } from '../utils/gymStore';
+import { todayTrainPlan } from '../utils/trainLink';
 import ExerciseRunner from '../components/train/ExerciseRunner';
 import BenchmarkBoard, { INSTRUMENT_COLOR } from '../components/train/BenchmarkBoard';
 
@@ -36,10 +37,21 @@ function Segmented({ label, options, value, onChange }) {
   );
 }
 
-export default function TrainPage() {
+const newRun = (entries, fromToday = null) => ({ queue: entries, index: 0, startedAt: Date.now(), clean: 0, total: 0, done: 0, fromToday });
+
+// Today hands off with intent { start: 'today', minutes }: run what is left of
+// today's technique block straight away.
+function runFromIntent(intent, gym) {
+  if (intent?.start !== 'today') return null;
+  const plan = todayTrainPlan({ gym, exercises: EXERCISES, budgetMinutes: intent.minutes, today: localDateKey() });
+  return plan.upcoming.length ? newRun(plan.upcoming, { minutes: intent.minutes }) : null;
+}
+
+export default function TrainPage({ intent = null, onBackToToday }) {
   const [gym, setGym] = useState(loadGym);
   const [tab, setTab] = useState('session');
-  const [run, setRun] = useState(null); // { queue, index, startedAt, clean, total, done }
+  // { queue, index, startedAt, clean, total, done, fromToday }
+  const [run, setRun] = useState(() => runFromIntent(intent, loadGym()));
   const [summary, setSummary] = useState(null);
   const [saveError, setSaveError] = useState(false);
   const today = localDateKey();
@@ -64,7 +76,7 @@ export default function TrainPage() {
   const startRun = (entries) => {
     if (!entries.length) return;
     setSummary(null);
-    setRun({ queue: entries, index: 0, startedAt: Date.now(), clean: 0, total: 0, done: 0 });
+    setRun(newRun(entries));
     window.scrollTo(0, 0);
   };
 
@@ -98,7 +110,10 @@ export default function TrainPage() {
       return next;
     });
     if (last) {
-      setSummary({ minutes: Math.max(1, Math.round((Date.now() - run.startedAt) / 60000)), items: done, clean: run.clean, total: run.total, endedAt: new Date() });
+      const todayPlan = run.fromToday
+        ? todayTrainPlan({ gym: gymRef.current, exercises: EXERCISES, budgetMinutes: run.fromToday.minutes, today })
+        : null;
+      setSummary({ minutes: Math.max(1, Math.round((Date.now() - run.startedAt) / 60000)), items: done, clean: run.clean, total: run.total, endedAt: new Date(), todayPlan });
       setRun(null);
     } else {
       setRun((r) => ({ ...r, index: r.index + 1, done }));
@@ -159,6 +174,20 @@ export default function TrainPage() {
                 <div className="text-[10px] font-bold uppercase tracking-[2px] text-emerald-400">Session logged at {clock12(summary.endedAt)}</div>
                 <p className="mt-1 text-lg font-bold text-white">{summary.minutes} min · {summary.items} exercise{summary.items === 1 ? '' : 's'} · {summary.clean} clean of {summary.total} passes</p>
                 <p className="mt-1 text-sm text-gray-300">Tempos, benchmarks and review dates are updated. The queue below is already rebuilt for next time.</p>
+                {summary.todayPlan && (
+                  <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-emerald-800/50 pt-3">
+                    <p className="min-w-0 flex-1 text-sm text-gray-200">
+                      {summary.todayPlan.complete
+                        ? `Counted toward today: technique block done (${summary.todayPlan.doneCount} of ${Math.max(summary.todayPlan.slots, summary.todayPlan.doneCount)}).`
+                        : `Counted toward today: ${summary.todayPlan.doneCount} of ${summary.todayPlan.slots} technique exercises done.`}
+                    </p>
+                    {onBackToToday && (
+                      <button type="button" onClick={onBackToToday} className="flex min-h-11 items-center gap-2 rounded-xl bg-emerald-700 px-4 text-sm font-bold text-white hover:bg-emerald-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300">
+                        Back to Today <ArrowRight size={16} aria-hidden="true" />
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 

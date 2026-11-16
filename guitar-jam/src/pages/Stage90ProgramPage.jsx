@@ -10,10 +10,16 @@ import Metronome from '../components/guitar/Metronome';
 import VampPlayer from '../components/guitar/VampPlayer';
 import FocusSession from '../components/stage90/FocusSession';
 import { PracticeContext } from '../practiceContext';
+import TrainTodayCard from '../components/train/TrainTodayCard';
+import { SKILL_TRACKS } from '../data/skillTracks';
+import { flattenExercises, localDateKey } from '../utils/practiceEngine';
+import { todayTrainPlan, trainActiveDays, trainBudgetMinutes } from '../utils/trainLink';
 import {
   loadStage90, saveStage90, dateKey, daysBetween, daysToGig,
   gigReadiness, planForWeek, remediationFor,
 } from '../utils/stage90';
+
+const TRAIN_EXERCISES = flattenExercises(SKILL_TRACKS);
 
 const weekOf = (day) => Math.floor((day - 1) / 7);
 const dayIdx = (day) => (day - 1) % 7;
@@ -142,7 +148,7 @@ function localDateOffset(daysAgo) {
   return dateKey(d);
 }
 
-export default function Stage90ProgramPage() {
+export default function Stage90ProgramPage({ onOpenTrain }) {
   const [state, setState] = useState(loadStage90);
   const calendarDay = state.startDate
     ? Math.max(1, Math.min(STAGE90_TOTAL_DAYS, daysBetween(state.startDate, dateKey(new Date())) + 1))
@@ -246,14 +252,29 @@ export default function Stage90ProgramPage() {
   const listening = LISTENING[w];
   const totalMinutes = blocks.reduce((sum, block) => sum + block.m, 0);
   const nextBlock = blocks.findIndex((_, index) => !doneBlocks.includes(index));
-  const completedBlockCount = Math.min(doneBlocks.length, blocks.length);
+  // Technique (Train) is part of the day, but only of the real calendar day:
+  // its queue and its "done" state come from today's Train log, so it is not
+  // shown when browsing another day of the course.
+  const showTrain = calendarDay === null || calendarDay === day;
+  const trainMinutes = trainBudgetMinutes(totalMinutes, state.gym.minutes);
+  const trainPlan = useMemo(
+    () => todayTrainPlan({ gym: state.gym, exercises: TRAIN_EXERCISES, budgetMinutes: trainMinutes, today: localDateKey() }),
+    [state.gym, trainMinutes],
+  );
+  const trainDays = useMemo(() => trainActiveDays(state.gym), [state.gym]);
+  const trainBlockDone = showTrain && trainPlan.complete ? 1 : 0;
+  const planBlockCount = blocks.length + (showTrain ? 1 : 0);
+  const completedBlockCount = Math.min(doneBlocks.length, blocks.length) + trainBlockDone;
+  const dayMinutes = totalMinutes + (showTrain ? trainPlan.budgetMinutes : 0);
   const latestAssessment = Object.values(state.assessments)
     .filter((assessment) => assessment && typeof assessment.score === 'number')
     .sort((a, b) => a.week - b.week)
     .at(-1);
   const readiness = gigReadiness(state.assessments);
   const activityDays = Array.from({ length: 7 }, (_, index) => localDateOffset(6 - index));
-  const activeDays = activityDays.filter((key) => (state.program.activity?.[key] || 0) > 0).length;
+  // A day counts as practiced if a program block OR a Train rep was logged.
+  const isActiveDay = (key) => (state.program.activity?.[key] || 0) > 0 || trainDays.has(key);
+  const activeDays = activityDays.filter(isActiveDay).length;
   const weekPlan = planForWeek(w);
 
   return (
@@ -330,7 +351,7 @@ export default function Stage90ProgramPage() {
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-teal-600 py-4 text-base font-extrabold text-white shadow-lg shadow-teal-950/30 hover:bg-teal-500"
               >
                 <Play size={18} fill="currentColor" />
-                {dayDone ? 'Practice this day again' : completedBlockCount > 0 ? `Continue practice · ${completedBlockCount}/${blocks.length} blocks` : `Start today's practice · ${totalMinutes} min`}
+                {dayDone ? 'Practice this day again' : completedBlockCount > 0 ? `Continue practice · ${completedBlockCount}/${planBlockCount} blocks` : `Start today's practice · ${totalMinutes} min`}
               </button>
             )}
 
@@ -383,7 +404,7 @@ export default function Stage90ProgramPage() {
             <div>
               <div className="mb-2 flex items-center justify-between gap-3 px-0.5">
                 <div className="text-[10px] font-bold tracking-[2px] text-gray-500">TODAY'S PRACTICE QUEUE</div>
-                <div className="flex items-center gap-1 text-[11px] text-gray-500"><Clock3 size={13} /> {totalMinutes} min</div>
+                <div className="flex items-center gap-1 text-[11px] text-gray-500" data-testid="day-minutes"><Clock3 size={13} /> {dayMinutes} min{showTrain && ` · ${totalMinutes} program + ${trainPlan.budgetMinutes} technique`}</div>
               </div>
               <div className="space-y-2">
                 {blocks.map((b, i) => {
@@ -413,6 +434,13 @@ export default function Stage90ProgramPage() {
                     </button>
                   );
                 })}
+                {showTrain && (
+                  <TrainTodayCard
+                    plan={trainPlan}
+                    number={blocks.length + 1}
+                    onStart={onOpenTrain ? () => onOpenTrain(trainPlan.complete || !trainPlan.upcoming.length ? null : { start: 'today', minutes: trainPlan.budgetMinutes }) : undefined}
+                  />
+                )}
               </div>
             </div>
 
@@ -543,7 +571,7 @@ export default function Stage90ProgramPage() {
               </div>
               <div className="mt-3 grid grid-cols-7 gap-1.5">
                 {activityDays.map((key) => {
-                  const active = (state.program.activity?.[key] || 0) > 0;
+                  const active = isActiveDay(key);
                   return (
                     <div key={key} className="text-center">
                       <div className={`mx-auto h-7 w-full max-w-7 rounded-md ${active ? 'bg-emerald-500' : 'bg-gray-700'}`} title={`${key}: ${active ? 'practice logged' : 'no practice logged'}`} />
