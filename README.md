@@ -34,4 +34,6 @@ The full design is in [PLAN.md](PLAN.md). Run locally: `cd guitar-jam && npm ins
   curriculum JSON (source of truth), markdown program, standalone single-file web app.
 - **[daily-guitar-scales/](daily-guitar-scales/)** — the earlier scales app whose audio engine
   and fretboard were folded into guitar-jam.
+- **[cyd-touch-demo/](cyd-touch-demo/)** — PlatformIO/Arduino touchscreen demo for the ELEGOO 2.8"
+  ESP32-32E (E32R28T) display board, with a verified pinout table and Mac setup steps.
 - **[mustang/](mustang/)** — Fender Mustang amp preset archives (.fuse) backing the Amp tab.
