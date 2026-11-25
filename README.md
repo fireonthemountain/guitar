@@ -6,8 +6,8 @@ feeds into it or is kept as source material.
 **Live app: <https://guitar-one-blush.vercel.app/>** — hosted on Vercel, auto-deployed from
 `main` (root directory `guitar-jam`). Open it on any device and Add to Home Screen (it's a
 PWA). Optional login wall: Vercel project → Settings → Deployment Protection → Vercel
-Authentication. Progress syncs across devices via the built-in `/api/sync` endpoint —
-link a free Upstash Redis database once in Vercel (see [sync-worker/README.md](sync-worker/README.md)),
+Authentication. Progress can sync across devices via the built-in `/api/sync` endpoint —
+link an Upstash Redis database once in Vercel (see [sync-worker/README.md](sync-worker/README.md)),
 then tap "This site" in the app's Cloud Sync card. Export/Import remains the manual fallback.
 
 ## Stage Ready 90 — the headline program
@@ -35,3 +35,7 @@ The full design is in [PLAN.md](PLAN.md). Run locally: `cd guitar-jam && npm ins
 - **[daily-guitar-scales/](daily-guitar-scales/)** — the earlier scales app whose audio engine
   and fretboard were folded into guitar-jam.
 - **[mustang/](mustang/)** — Fender Mustang amp preset archives (.fuse) backing the Amp tab.
+
+The current practice release and remaining device checks are described in
+[the release checklist](guitar-jam/RELEASE-2026-11-24.md). Development uses Node 26;
+run `npm ci`, `npm test`, `npm run validate:curriculum` and `npm run build` in `guitar-jam`.

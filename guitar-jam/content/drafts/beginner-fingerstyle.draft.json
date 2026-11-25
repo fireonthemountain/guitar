@@ -1,0 +1,1243 @@
+{
+  "schemaVersion": 1,
+  "skills": [
+    {
+      "id": "fingerstyle-arpeggio",
+      "name": "Fingerstyle arpeggios (p-i-m-a)",
+      "domain": "technique"
+    },
+    {
+      "id": "travis-picking",
+      "name": "Travis picking",
+      "domain": "technique",
+      "prerequisiteSkillIds": [
+        "fingerstyle-arpeggio"
+      ]
+    },
+    {
+      "id": "open-chord-changes",
+      "name": "Open chord and barre changes",
+      "domain": "foundation"
+    },
+    {
+      "id": "capo-transposition",
+      "name": "Capo and transposition",
+      "domain": "theory"
+    },
+    {
+      "id": "voice-leading",
+      "name": "Voice-leading and bass movement",
+      "domain": "fretboard",
+      "prerequisiteSkillIds": [
+        "open-chord-changes"
+      ]
+    }
+  ],
+  "courses": [
+    {
+      "id": "beginner-fingerstyle-pilot",
+      "title": "Beginner Fingerstyle (pilot, unreviewed draft)",
+      "level": "beginner",
+      "instrument": "acoustic",
+      "description": "DRAFT SKELETON. Lesson order and topics follow the owned source book's chapters 2-17. No tablature has been entered: every exercise is marked unverified and every source reference is marked unreviewed. Tempo and mastery numbers are placeholders (the source marks 120 BPM throughout). Not shown in the app until reviewed.",
+      "outcomes": [
+        "Hold a thumb-index-thumb-middle pattern through open chord changes",
+        "Add melody notes, walk-downs and pinches to the pattern",
+        "Play a 12-bar fingerstyle blues with seventh chords"
+      ],
+      "modules": [
+        {
+          "id": "bf-thumb-and-fingers",
+          "title": "Thumb and two fingers",
+          "description": "Source chapters 2-5: the alternating thumb on a C chord, then index and middle added.",
+          "lessons": [
+            {
+              "id": "bf-ch02-thumb-on-c",
+              "title": "Chapter 2: alternating thumb on C",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "travis-picking",
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Alternate the thumb between two bass strings on a held C chord",
+                "Extend the thumb pattern to a third bass string"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch02-thumb-two-strings",
+                  "title": "Thumb alternating between the A and G strings",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "Hold C and alternate the thumb between the A string and the G string, one note per click.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "travis-picking",
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                },
+                {
+                  "id": "bf-ch02-thumb-add-d",
+                  "title": "Thumb pattern with the D string added",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "Same thumb pattern with the D string added between the outer notes.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "travis-picking",
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    1
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ]
+            },
+            {
+              "id": "bf-ch03-thumb-index-thumb-middle",
+              "title": "Chapter 3: thumb-index-thumb-middle, C to A minor",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "travis-picking",
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Play thumb-index-thumb-middle evenly",
+                "Keep the pattern going through a C to A minor change"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch03-timt-c",
+                  "title": "Thumb-index-thumb-middle on C",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "Thumb-index-thumb-middle pattern on a held C chord.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "travis-picking",
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                },
+                {
+                  "id": "bf-ch03-timt-c-am",
+                  "title": "Same pattern, C to A minor",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "Keep the picking pattern unchanged while the fretting hand moves from C to A minor.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "travis-picking",
+                    "fingerstyle-arpeggio",
+                    "open-chord-changes"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    2
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ],
+              "prerequisiteLessonIds": [
+                "bf-ch02-thumb-on-c"
+              ]
+            },
+            {
+              "id": "bf-ch04-transition-chord",
+              "title": "Chapter 4: C major, a transition chord, A minor",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "open-chord-changes",
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Use a passing chord to connect C and A minor without stopping the pattern"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch04-c-transition-am",
+                  "title": "C, transition chord, A minor",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "Pattern through C, the transition chord shown on the source page, then A minor.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "open-chord-changes",
+                    "fingerstyle-arpeggio",
+                    "voice-leading"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    3
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ],
+              "prerequisiteLessonIds": [
+                "bf-ch03-thumb-index-thumb-middle"
+              ]
+            },
+            {
+              "id": "bf-ch05-high-e-pattern",
+              "title": "Chapter 5: a new pattern using the high E string",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Add the high E string to the pattern",
+                "Alternate between the two patterns on one chord"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch05-high-e-on-c",
+                  "title": "New pattern with the high E string on C",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The second picking pattern, which reaches the high E string, on a C chord.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                },
+                {
+                  "id": "bf-ch05-alternate-patterns",
+                  "title": "Alternating the two patterns on C",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "One bar of the first pattern, one bar of the new pattern, on C.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    4
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ],
+              "prerequisiteLessonIds": [
+                "bf-ch03-thumb-index-thumb-middle"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bf-new-chords-and-melody",
+          "title": "New chords and melody notes",
+          "description": "Source chapters 6-11: F shapes, Csus4, simple melodies inside the pattern, G and E minor.",
+          "lessons": [
+            {
+              "id": "bf-ch06-f-shapes-csus4",
+              "title": "Chapter 6: F, Fmaj7 and Csus4",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "open-chord-changes",
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Fret F, Fmaj7 and an alternate F shape cleanly under the pattern",
+                "Move between Csus4 and C as a melodic device"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch06-f-fmaj7",
+                  "title": "Pattern on F and Fmaj7",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The picking pattern on F, Fmaj7 and the alternate F fingering.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "open-chord-changes",
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                },
+                {
+                  "id": "bf-ch06-melody-on-f",
+                  "title": "Melody using the F chord",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The short melody built on the F shape.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio",
+                    "voice-leading"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                },
+                {
+                  "id": "bf-ch06-csus4-c",
+                  "title": "Alternating Csus4 and C",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "Alternate Csus4 and C while the pattern continues.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "open-chord-changes",
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    5,
+                    6
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ]
+            },
+            {
+              "id": "bf-ch07-melody-on-c",
+              "title": "Chapter 7: pattern with a simple melody on C",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Bring out a melody note on top of a steady pattern",
+                "Use Cmaj7 and G within the pattern"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch07-melody-c",
+                  "title": "Pattern with a simple melody on C",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The pattern on C with melody notes added on the top strings; includes Cmaj7 and G.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio",
+                    "voice-leading"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    7
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ],
+              "prerequisiteLessonIds": [
+                "bf-ch05-high-e-pattern"
+              ]
+            },
+            {
+              "id": "bf-ch08-melody-on-am",
+              "title": "Chapter 8: the same idea on A minor",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Apply the melody-on-top idea to A minor",
+                "Reach the high E string third fret with the pinky"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch08-melody-am",
+                  "title": "Pattern with a simple melody on A minor",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "Same idea as the previous chapter on A minor, with the pinky reaching the third fret of the high E string.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio",
+                    "voice-leading"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    8
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ],
+              "prerequisiteLessonIds": [
+                "bf-ch07-melody-on-c"
+              ]
+            },
+            {
+              "id": "bf-ch09-f-g-c-walkdown",
+              "title": "Chapter 9: F, G and a C walk-down",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "open-chord-changes",
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Play the pattern on F and G with the optional high E string",
+                "Connect chords with a bass walk-down from C"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch09-f-g",
+                  "title": "Pattern on F and G",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The pattern on F and G, high E string optional.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "open-chord-changes",
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                },
+                {
+                  "id": "bf-ch09-c-walkdown",
+                  "title": "C walk-down",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The descending bass line from C shown on the source page.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "voice-leading",
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    9
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ]
+            },
+            {
+              "id": "bf-ch10-g-shapes",
+              "title": "Chapter 10: G and the four-finger G",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "open-chord-changes",
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Play the pattern on both G fingerings shown in the source"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch10-g-pattern",
+                  "title": "Pattern on G and the fuller G shape",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The pattern on standard G and on the fuller G voicing the source names.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "open-chord-changes",
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    10
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ]
+            },
+            {
+              "id": "bf-ch11-e-minor",
+              "title": "Chapter 11: E minor",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Play the pattern on E minor",
+                "Add the high E string to the E minor pattern"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch11-em-pattern",
+                  "title": "Pattern on E minor",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The base pattern on E minor.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                },
+                {
+                  "id": "bf-ch11-em-high-e",
+                  "title": "E minor pattern with the high E string",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The E minor pattern extended to the high E string.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    11,
+                    12
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bf-d-a-and-capo",
+          "title": "D and A shapes, capo",
+          "description": "Source chapters 12-14: D-chord embellishments, A shapes, and the same progression with a capo at the 5th fret.",
+          "lessons": [
+            {
+              "id": "bf-ch12-d-embellishments",
+              "title": "Chapter 12: D with moving fingers",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Play thumb-index-thumb-middle on D",
+                "Lift the middle finger and add the pinky for D embellishments"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch12-d-pattern",
+                  "title": "Thumb-index-thumb-middle on D",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The pattern on D.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                },
+                {
+                  "id": "bf-ch12-d-sus",
+                  "title": "D with middle finger off and pinky down",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The pattern on D while lifting the middle finger and adding the pinky, as the source page marks.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio",
+                    "voice-leading"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    13,
+                    14
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ]
+            },
+            {
+              "id": "bf-ch13-a-shapes",
+              "title": "Chapter 13: A",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Play thumb-index-thumb-middle on A",
+                "Use the optional high E string on A"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch13-a-pattern",
+                  "title": "Thumb-index-thumb-middle on A",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The pattern on A, with the optional high E string.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    15,
+                    16
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ]
+            },
+            {
+              "id": "bf-ch14-capo-5",
+              "title": "Chapter 14: capo at the 5th fret",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "capo-transposition",
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Play C, G, Am and F shapes with a capo at the 5th fret",
+                "Name the sounding chords"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch14-capo-progression",
+                  "title": "C, G, Am, F shapes with capo 5",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The pattern through C, G, Am and F shapes with the capo at the 5th fret.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "capo-transposition",
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    17
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bf-walkdowns-pinches-blues",
+          "title": "Walk-downs, pinches and a fingerstyle blues",
+          "description": "Source chapters 15-17.",
+          "lessons": [
+            {
+              "id": "bf-ch15-am-walkdown",
+              "title": "Chapter 15: A minor to A minor over G walk-down",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "voice-leading",
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Play a descending bass under A minor",
+                "Keep the pattern steady through the walk-down chord"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch15-am-amg",
+                  "title": "A minor, A minor over G, walk-down chord",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The pattern on Am, Am/G and the walk-down chord shown in the source.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "voice-leading",
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    18,
+                    19
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ]
+            },
+            {
+              "id": "bf-ch16-pinch",
+              "title": "Chapter 16: the pinch",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "fingerstyle-arpeggio"
+              ],
+              "objectives": [
+                "Pinch thumb and index together",
+                "Combine thumb strokes and pinches on Am, D and G"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch16-pinch-am",
+                  "title": "Pinch with thumb and index on A minor",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "Thumb and index pinch on Am, then the thumb-pinch pattern.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                },
+                {
+                  "id": "bf-ch16-pinch-d-g",
+                  "title": "Pinch pattern on D and G",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The pinch pattern on D major and G major, with the optional D and B string pluck.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    20,
+                    21
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ]
+            },
+            {
+              "id": "bf-ch17-fingerstyle-blues",
+              "title": "Chapter 17: fingerstyle blues with seventh chords",
+              "estimatedMinutes": 15,
+              "skillIds": [
+                "fingerstyle-arpeggio",
+                "voice-leading"
+              ],
+              "objectives": [
+                "Fret A7, B7, C7, E7, F7 and G7",
+                "Play a 12-bar fingerstyle blues with a turnaround"
+              ],
+              "exercises": [
+                {
+                  "id": "bf-ch17-seventh-chords",
+                  "title": "Seventh chord shapes and the A7 movement",
+                  "type": "chord",
+                  "instructions": [
+                    "The seventh-chord shapes and the A7 movement option from the chord page.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "open-chord-changes"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                },
+                {
+                  "id": "bf-ch17-blues-in-c",
+                  "title": "Fingerstyle blues: I, IV, V and turnaround",
+                  "type": "song",
+                  "instructions": [
+                    "The blues study using C7 (I), F7 (IV), G7 (V) and the G7 turnaround.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio",
+                    "voice-leading"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                },
+                {
+                  "id": "bf-ch17-e7-a7-patterns",
+                  "title": "Patterns with E7 and A7",
+                  "type": "fingerstyle",
+                  "instructions": [
+                    "The closing patterns on E7 and A7.",
+                    "TAB NOT ENTERED: transcribe from the source page(s) listed on this lesson during review, then set unverified to false."
+                  ],
+                  "skillIds": [
+                    "fingerstyle-arpeggio"
+                  ],
+                  "unverified": true,
+                  "tempo": {
+                    "startBpm": 60,
+                    "targetBpm": 120,
+                    "stepBpm": 5
+                  },
+                  "feedback": {
+                    "mode": "timing",
+                    "notesPerBeat": 2
+                  },
+                  "mastery": {
+                    "cleanRepetitions": 3,
+                    "minimumBpm": 120,
+                    "maximumStumbles": 0
+                  }
+                }
+              ],
+              "sourceReferences": [
+                {
+                  "sourceId": "marty-music-beginner-fingerstyle",
+                  "pages": [
+                    22,
+                    23,
+                    24,
+                    25
+                  ],
+                  "usage": "private-reference",
+                  "reviewed": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

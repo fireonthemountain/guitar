@@ -322,7 +322,8 @@ export function playScale(scaleNotes, rootIdx, bpm, instrument, onNoteStart, cli
 // onStep(stepIndexOrNull, meta) fires per step; meta carries { loop, loops, bpm },
 //   { countIn: beatsLeft } during the count-in, or { done: true } at the end.
 export function playTab(steps, opts, onStep) {
-  const { bpm = 70, instrument = 'guitar', loops = 1, countIn = false, tempoStep = 0, tempoMax = 400, click = false } = opts || {};
+  const { bpm = 70, notesPerBeat = 1, instrument = 'guitar', loops = 1, countIn = false, tempoStep = 0, tempoMax = 400, click = false } = opts || {};
+  const subdivision = Number.isFinite(notesPerBeat) && notesPerBeat >= 1 ? notesPerBeat : 1;
   const ctx = getAudioCtx();
   const gen = ++_gen;
   killMelody();
@@ -353,10 +354,11 @@ export function playTab(steps, opts, onStep) {
   for (let l = 0; l < scheduled; l++) {
     const curBpm = Math.min(tempoMax, bpm + l * tempoStep);
     const beat = 60 / curBpm;
-    const noteDur = beat * 0.9;
+    const stepSeconds = beat / subdivision;
+    const noteDur = stepSeconds * 0.9;
 
     steps.forEach((step, i) => {
-      const t0 = t + i * beat;
+      const t0 = t + i * stepSeconds;
       const isChord = step.notes.length > 1;
       step.notes.forEach((n) => {
         // Strum: low strings (higher stringIdx) a hair before high ones.
@@ -365,11 +367,11 @@ export function playTab(steps, opts, onStep) {
         if (instrument === 'piano') schedulePianoNote(freq, tn, noteDur, ctx, bus);
         else scheduleGuitarNote(freq, tn, noteDur, ctx, bus);
       });
-      if (click) scheduleMetronomeClick(t0, i % 4 === 0, ctx, pbClick); // beat locked to each note
+      if (click && i % subdivision === 0) scheduleMetronomeClick(t0, (i / subdivision) % 4 === 0, ctx, pbClick);
       fire(t0, () => onStep && onStep(i, { loop: l + 1, loops: scheduled, bpm: curBpm }));
     });
 
-    t += steps.length * beat + beat * 0.35; // brief breath between loops
+    t += steps.length * stepSeconds + beat * 0.35; // brief breath between loops
   }
 
   fire(t, () => onStep && onStep(null, { done: true }));

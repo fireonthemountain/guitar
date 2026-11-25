@@ -14,10 +14,11 @@ const posOf = (step) => (step ? step.notes.map((n) => ({ stringIdx: n.stringIdx,
 //   • step  — show ONE chord/note at a time, with a slider to move between them
 //             (default for chord charts, so shapes aren't all piled on at once)
 //   • shape — show every position at once (default for melodic runs / scales)
-function TabBlock({ label, tab }) {
+function TabBlock({ label, tab, tempoBpm = null, notesPerBeat = 1, onPlay }) {
   const parsed = useMemo(() => parseTab(tab), [tab]);
   const practice = usePractice();
-  const [bpm, setBpm] = useState(70);
+  const [freeBpm, setBpm] = useState(70);
+  const bpm = Number.isFinite(tempoBpm) ? tempoBpm : freeBpm;
   const [playing, setPlaying] = useState(false);
   const [activeStep, setActiveStep] = useState(null);
   const [status, setStatus] = useState(null);
@@ -29,6 +30,13 @@ function TabBlock({ label, tab }) {
   // Reset when the tab itself changes (component is reused across days).
   useEffect(() => { setStepView(0); setMode(hasChord ? 'step' : 'shape'); }, [tab, hasChord]);
   useEffect(() => () => cancelScale(), []);
+  useEffect(() => {
+    if (tempoBpm == null) return;
+    cancelScale();
+    setPlaying(false);
+    setActiveStep(null);
+    setStatus(null);
+  }, [tempoBpm]);
 
   // Every distinct position (for the shape view) + a stable display window.
   const { allPositions, minFret, maxFret } = useMemo(() => {
@@ -60,10 +68,11 @@ function TabBlock({ label, tab }) {
       setStatus(null);
       return;
     }
+    onPlay?.();
     setPlaying(true);
     playTab(
       parsed.steps,
-      { bpm, instrument: 'guitar', loops: practice.loops, countIn: practice.countIn, tempoStep: practice.tempoStep, tempoMax: 200, click: practice.click },
+      { bpm, notesPerBeat, instrument: 'guitar', loops: practice.loops, countIn: practice.countIn, tempoStep: practice.tempoStep, tempoMax: 200, click: practice.click },
       (step, meta) => {
         if (meta?.done) { setPlaying(false); setActiveStep(null); setStatus(null); return; }
         if (meta?.countIn) { setActiveStep(null); setStatus(`Count-in ${meta.countIn}…`); return; }
@@ -74,7 +83,7 @@ function TabBlock({ label, tab }) {
         setStatus(parts.join(' · ') || null);
       }
     );
-  }, [playing, parsed.steps, bpm, practice]);
+  }, [playing, parsed.steps, bpm, notesPerBeat, practice, onPlay]);
 
   if (!parsed.playable) {
     return (
@@ -133,7 +142,7 @@ function TabBlock({ label, tab }) {
 
       <div className="flex items-center gap-2 mt-2">
         <span className="text-gray-500 text-[11px] w-20 flex-shrink-0">{bpm} BPM</span>
-        <input
+        {tempoBpm == null ? <input
           type="range"
           min={40}
           max={160}
@@ -141,7 +150,7 @@ function TabBlock({ label, tab }) {
           onChange={(e) => setBpm(Number(e.target.value))}
           disabled={playing}
           className="w-full accent-amber-500"
-        />
+        /> : <span className="text-[11px] text-gray-400">Follows the tempo ladder · {notesPerBeat} note{notesPerBeat === 1 ? '' : 's'} per click</span>}
       </div>
 
       <pre className="bg-gray-950 border border-gray-700 rounded-lg p-3 text-gray-200 text-xs leading-relaxed overflow-x-auto font-mono mt-2">{tab}</pre>

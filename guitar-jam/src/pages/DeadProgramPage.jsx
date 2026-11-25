@@ -9,6 +9,13 @@ import VampPlayer from '../components/guitar/VampPlayer';
 import StrumPatterns from '../components/guitar/StrumPatterns';
 import { PracticeContext } from '../practiceContext';
 import { NOTE_NAMES } from '../utils/guitarScales';
+import { SKILL_TRACKS } from '../data/skillTracks';
+import { flattenExercises, localDateKey } from '../utils/practiceEngine';
+import { loadStage90, normalizeDead90, saveStage90 } from '../utils/stage90';
+import { todayTrainPlan, trainBudgetMinutes } from '../utils/trainLink';
+import TrainTodayCard from '../components/train/TrainTodayCard';
+
+const TRAIN_EXERCISES = flattenExercises(SKILL_TRACKS);
 
 // The scale to drill "up the neck" per week (0-based). Weeks without an obvious
 // single scale fall back to E Mixolydian, the program's home sound.
@@ -90,9 +97,11 @@ function info(day) {
 }
 
 function loadState() {
+  const shared = loadStage90().dead90;
+  if (shared) return normalizeDead90(shared);
   try {
     const s = localStorage.getItem(KEY);
-    if (s) return { completed: [], notes: {}, blocks: {}, activity: {}, ...JSON.parse(s) };
+    if (s) return normalizeDead90(JSON.parse(s));
   } catch {}
   return { completed: [], notes: {}, blocks: {}, activity: {} };
 }
@@ -203,8 +212,10 @@ function Ring({ day, completed }) {
   );
 }
 
-export default function DeadProgramPage() {
+export default function DeadProgramPage({ onOpenTrain }) {
   const [state, setState] = useState(loadState);
+  const [saveError, setSaveError] = useState(false);
+  const [trainState] = useState(loadStage90);
   const [day, setDay] = useState(() => {
     const q = parseInt(new URLSearchParams(window.location.search).get('day'), 10);
     return q >= 1 && q <= 90 ? q : firstIncomplete(loadState().completed);
@@ -214,10 +225,18 @@ export default function DeadProgramPage() {
   const [optionsOpen, setOptionsOpen] = useState(false);
 
   useEffect(() => {
+    // Read the latest shared blob so course edits cannot erase Train reps.
+    const result = saveStage90({ ...loadStage90(), dead90: state });
+    setSaveError(!result.ok);
     try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
   }, [state]);
 
   const nfo = useMemo(() => info(day), [day]);
+  const trainPlan = useMemo(() => todayTrainPlan({
+    gym: trainState.gym, assessments: trainState.assessments, exercises: TRAIN_EXERCISES,
+    budgetMinutes: trainBudgetMinutes(nfo.blocks.reduce((sum, block) => sum + block.m, 0), trainState.gym.minutes),
+    today: localDateKey(),
+  }), [trainState, nfo]);
 
   const goto = useCallback((d) => {
     if (d < 1 || d > 90) return;
@@ -274,6 +293,7 @@ export default function DeadProgramPage() {
   return (
     <PracticeContext.Provider value={practice}>
     <div className="space-y-6">
+      {saveError && <p role="alert" className="rounded-xl border border-rose-700 bg-rose-950/40 p-3 text-sm text-rose-200">Course progress could not be saved to the shared progress copy. Export your course progress before leaving this page.</p>}
       {/* Title */}
       <div className="text-center">
         <div className="text-rose-400 text-[11px] font-bold tracking-[3px]">A GRATEFUL DEAD GUITAR PROGRAM</div>
@@ -424,6 +444,12 @@ export default function DeadProgramPage() {
           })}
         </div>
       </div>
+
+      {onOpenTrain && <TrainTodayCard
+        plan={trainPlan}
+        number={nfo.blocks.length + 1}
+        onStart={(plan) => onOpenTrain({ start: 'today', minutes: plan.budgetMinutes })}
+      />}
 
       {/* Chord chart + strum pattern */}
       {nfo.chordChart && (

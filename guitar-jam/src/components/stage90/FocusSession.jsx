@@ -29,11 +29,43 @@ function buildCards(blocks, steps, intro) {
   return cards;
 }
 
-export default function FocusSession({ blocks, steps, weekTabs, dayLabel, intro, onBlockDone, onFinishDay, onExit }) {
+function PatternGroup({ group }) {
+  const isStrum = group.label === 'Strumming';
+  return (
+    <div className="rounded-xl border border-gray-700 bg-gray-950/50 px-3.5 py-3">
+      <div className="mb-2 text-[10px] font-bold uppercase tracking-[1.5px] text-teal-400">{group.label}</div>
+      <div className="space-y-2.5">
+        {group.items.map((item) => {
+          const [name, ...rest] = item.split(':');
+          const pattern = rest.join(':').trim();
+          const marks = isStrum
+            ? pattern.split(/\s+/).map((token) => ({ D: '↓', U: '↑', B: 'B', '-': '·', x: '×' }[token] || token))
+            : pattern.split('–');
+          return (
+            <div key={item}>
+              <div className="text-[11px] font-semibold text-gray-400">{name}</div>
+              <div className="mt-1 flex flex-wrap gap-1" aria-label={pattern}>
+                {marks.map((mark, index) => (
+                  <span key={`${mark}-${index}`} className={`grid min-h-8 min-w-8 place-items-center rounded-md px-1.5 font-mono text-base font-bold ${mark === '·' ? 'bg-gray-900 text-gray-600' : 'bg-gray-800 text-gray-100'}`}>
+                    {mark}
+                  </span>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export default function FocusSession({ blocks, steps, contextTabs, allTabs, completedBlocks = [], dayLabel, intro, onBlockDone, onFinishDay, onExit }) {
   const [cards] = useState(() => buildCards(blocks, steps, intro));
-  const [idx, setIdx] = useState(0);
+  const firstOpen = cards.findIndex((item) => item.blockIdx >= 0 && !completedBlocks.includes(item.blockIdx));
+  const initialIdx = firstOpen >= 0 ? firstOpen : 0;
+  const [idx, setIdx] = useState(initialIdx);
   const [finished, setFinished] = useState(false);
-  const [remaining, setRemaining] = useState(cards[0]?.seconds ?? 0);
+  const [remaining, setRemaining] = useState(cards[initialIdx]?.seconds ?? 0);
   const [paused, setPaused] = useState(false);
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
@@ -73,7 +105,7 @@ export default function FocusSession({ blocks, steps, weekTabs, dayLabel, intro,
         <div className="text-5xl">🎸</div>
         <h3 className="text-white text-2xl font-bold" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>Session done — {dayLabel}</h3>
         <p className="text-gray-400 text-sm">Every exercise touched. That's the whole job today.</p>
-        <button onClick={onFinishDay} className="w-full py-3.5 rounded-xl font-extrabold text-[15px] bg-rose-500 hover:bg-rose-400 text-rose-50">
+        <button onClick={onFinishDay} className="w-full rounded-xl bg-emerald-600 py-3.5 text-[15px] font-extrabold text-white hover:bg-emerald-500">
           Mark day complete
         </button>
         <button onClick={onExit} className="text-gray-500 hover:text-gray-300 text-sm underline">back to the day view</button>
@@ -90,7 +122,7 @@ export default function FocusSession({ blocks, steps, weekTabs, dayLabel, intro,
       <div className="flex items-center gap-3">
         <div className="flex-1 flex gap-1">
           {cards.map((_, i) => (
-            <div key={i} className={`h-1.5 flex-1 rounded-full ${i < idx ? 'bg-teal-500' : i === idx ? 'bg-amber-400' : 'bg-gray-700'}`} />
+            <div key={i} className={`h-1.5 flex-1 rounded-full ${i < idx ? 'bg-emerald-500' : i === idx ? 'bg-teal-500' : 'bg-gray-700'}`} />
           ))}
         </div>
         <span className="text-gray-500 text-xs flex-shrink-0">{idx + 1} / {total}</span>
@@ -116,6 +148,14 @@ export default function FocusSession({ blocks, steps, weekTabs, dayLabel, intro,
             ))}
             <p className="text-gray-500 text-xs">Read it once — it's here every day under "When you need it."</p>
           </div>
+        ) : card.block.groups ? (
+          <div className="space-y-3">
+            <p className="text-gray-100 text-lg leading-relaxed" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>{card.text}</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {card.block.groups.map((group) => <PatternGroup key={group.label} group={group} />)}
+            </div>
+            {card.block.legend && <p className="text-gray-500 text-[11px] leading-relaxed">{card.block.legend}</p>}
+          </div>
         ) : (
           <p className="text-gray-100 text-lg leading-relaxed" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>{card.text}</p>
         )}
@@ -132,14 +172,22 @@ export default function FocusSession({ blocks, steps, weekTabs, dayLabel, intro,
           </button>
         </div>
 
-        {/* Charts on demand — don't clutter the card */}
-        {weekTabs?.length > 0 && (
-          <details className="bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2">
-            <summary className="text-gray-400 text-xs font-semibold cursor-pointer select-none">This week's charts</summary>
+        {/* The reference most likely to help this exercise is visible first. */}
+        {contextTabs?.length > 0 && (
+          <details open className="bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2">
+            <summary className="cursor-pointer select-none text-xs font-semibold text-teal-300">Reference for this session</summary>
             <div className="pt-1">
-              {weekTabs.map((t, i) => (
+              {contextTabs.map((t, i) => (
                 <TabBlock key={i} label={t.l} tab={t.t} />
               ))}
+            </div>
+          </details>
+        )}
+        {allTabs?.length > contextTabs?.length && (
+          <details className="rounded-xl border border-gray-700 bg-gray-900/50 px-3 py-2">
+            <summary className="cursor-pointer select-none text-xs font-semibold text-gray-400">All weekly charts</summary>
+            <div className="pt-1">
+              {allTabs.map((t, i) => <TabBlock key={`${t.l}-${i}`} label={t.l} tab={t.t} />)}
             </div>
           </details>
         )}
