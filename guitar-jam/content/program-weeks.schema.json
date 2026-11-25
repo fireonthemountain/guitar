@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://guitar-practice.local/schemas/program-weeks.schema.json",
+  "title": "Week-based practice program (Dead 90 and Stage Ready 90)",
+  "description": "Describes the week/day program data as it exists today: src/data/curriculum.json (WEEKS) and src/data/stage90Curriculum.js (STAGE90_WEEKS). The normalized course model lives in curriculum.schema.json.",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "$ref": "#/$defs/week"
+  },
+  "$defs": {
+    "tab": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "l",
+        "t"
+      ],
+      "properties": {
+        "l": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Label"
+        },
+        "t": {
+          "type": "string",
+          "minLength": 1,
+          "description": "ASCII tab or chart text"
+        }
+      }
+    },
+    "day": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "f",
+        "h"
+      ],
+      "properties": {
+        "f": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Focus of the day"
+        },
+        "h": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Numbered steps"
+        },
+        "assessment": {
+          "type": "boolean"
+        },
+        "tabs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/tab"
+          },
+          "description": "Day-specific tabs (Dead 90 uses these)"
+        }
+      }
+    },
+    "week": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "t",
+        "lesson",
+        "days"
+      ],
+      "properties": {
+        "w": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "t": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Week title"
+        },
+        "lesson": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "p",
+            "tabs",
+            "terms"
+          ],
+          "properties": {
+            "p": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "tabs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tab"
+              }
+            },
+            "terms": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        },
+        "days": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {
+            "$ref": "#/$defs/day"
+          }
+        }
+      }
+    }
+  }
+}

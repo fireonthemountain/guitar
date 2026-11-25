@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Height of the phone bottom tab bar, without the home-indicator inset.
+       The Train action bar parks itself just above it. */
+    --mobile-nav-h: 3.75rem;
+  }
+
   html {
     -webkit-tap-highlight-color: transparent;
   }
@@ -20,6 +26,20 @@
   }
   input[type='number'] {
     -moz-appearance: textfield;
+  }
+}
+
+@layer components {
+  /* Train runner: sticky tempo + grade bar. Above the bottom tab bar on a
+     phone; at the bottom edge (clear of the home indicator) once the tab bar
+     is replaced by the sidebar. */
+  .train-action-bar {
+    bottom: calc(var(--mobile-nav-h) + env(safe-area-inset-bottom, 0px) + 0.5rem);
+  }
+  @media (min-width: 768px) {
+    .train-action-bar {
+      bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+    }
   }
 }
 

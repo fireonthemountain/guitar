@@ -3,11 +3,17 @@ import AssessmentWizard from '../components/stage90/AssessmentWizard';
 import ReadinessDial from '../components/stage90/ReadinessDial';
 import TrendChart from '../components/stage90/TrendChart';
 import SyncCard from '../components/stage90/SyncCard';
+import TrainWeekCard from '../components/train/TrainWeekCard';
+import { SKILL_TRACKS } from '../data/skillTracks';
+import { flattenExercises, localDateKey } from '../utils/practiceEngine';
+import { trainReportLine, weeklyTrainReport } from '../utils/trainLink';
 import { ASSESSMENT_WEEKS, PHASES, phaseForWeek, GIG_TEMPO_TARGET, RATING_KEYS } from '../data/assessmentPlan';
 import {
   loadStage90, saveStage90, emptyStage90, dateKey, addDays, currentWeek, daysToGig,
   planForWeek, gigReadiness, remediationFor, PROGRAM_WEEKS,
 } from '../utils/stage90';
+
+const TRAIN_EXERCISES = flattenExercises(SKILL_TRACKS);
 
 const fmtDate = (iso) => new Date(iso + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 
@@ -60,6 +66,8 @@ function HistoryRow({ record, plan, onRedo }) {
           {counts.fail > 0 && <span className="text-rose-400">{counts.fail} fail</span>}
           {record.maxCleanBpm > 0 && <span className="text-gray-500">· {record.maxCleanBpm} BPM</span>}
         </div>
+        {/* Train results frozen with this assessment; older records have none. */}
+        {trainReportLine(record.train) && <div className="mt-0.5 truncate text-[11px] text-gray-500">Train: {trainReportLine(record.train)}</div>}
       </div>
       <div className="text-right flex-shrink-0">
         <div className="text-teal-400 font-bold text-lg" style={{ fontFamily: 'ui-serif, Georgia, serif' }}>{record.score}</div>
@@ -69,7 +77,7 @@ function HistoryRow({ record, plan, onRedo }) {
   );
 }
 
-export default function AssessmentPage() {
+export default function AssessmentPage({ onOpenTrain }) {
   const [state, setState] = useState(loadStage90);
   const [wizardWeek, setWizardWeek] = useState(null); // week number, or null
   const [editGig, setEditGig] = useState(false);
@@ -91,7 +99,14 @@ export default function AssessmentPage() {
   const latestPlan = latest ? planForWeek(latest.week) : null;
   const remediation = latest ? remediationFor(latest, latestPlan) : [];
 
-  const start = (gig) => setState({ ...emptyStage90(), startDate: dateKey(new Date()), gigDate: gig });
+  // Train results for the seven days ending today, against everything before.
+  const trainReport = useMemo(
+    () => weeklyTrainReport({ gym: state.gym, exercises: TRAIN_EXERCISES, today: localDateKey() }),
+    [state.gym],
+  );
+
+  // Starting the program must not wipe Train progress earned before a gig date was set.
+  const start = (gig) => setState((s) => ({ ...emptyStage90(), gym: s.gym, startDate: dateKey(new Date()), gigDate: gig }));
 
   const saveRecord = (record) => {
     setState((s) => ({ ...s, assessments: { ...s.assessments, [record.week]: record } }));
@@ -113,7 +128,9 @@ export default function AssessmentPage() {
     try {
       const parsed = JSON.parse(v);
       if (!parsed.startDate) throw new Error('missing startDate');
-      setState({ ...emptyStage90(), ...parsed });
+      // An export from before Train existed has no `gym`: keep the current one
+      // rather than erasing ladders and benchmarks.
+      setState((s) => ({ ...emptyStage90(), ...parsed, gym: parsed.gym ?? s.gym }));
       alert('Progress restored.');
     } catch {
       alert("Couldn't parse that — make sure it's the exported JSON.");
@@ -187,6 +204,7 @@ export default function AssessmentPage() {
               week={wizardWeek}
               plan={planForWeek(wizardWeek)}
               existing={state.assessments[wizardWeek]}
+              trainReport={trainReport}
               onSave={saveRecord}
               onCancel={() => setWizardWeek(null)}
             />
@@ -220,6 +238,9 @@ export default function AssessmentPage() {
                     </p>
                   )}
                 </div>
+
+                {/* Train: this week's technique benchmarks, beside the G–D–Em–C tempo test */}
+                <TrainWeekCard report={trainReport} onOpenTrain={onOpenTrain} />
 
                 {/* Remediation from the latest assessment */}
                 {remediation.length > 0 && (

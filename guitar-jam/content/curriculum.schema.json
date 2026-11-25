@@ -1,0 +1,417 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://guitar-practice.local/schemas/curriculum.schema.json",
+  "title": "Guitar Practice Curriculum",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "courses",
+    "skills"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/skill"
+      }
+    },
+    "courses": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/course"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "sourceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceId",
+        "pages",
+        "usage"
+      ],
+      "properties": {
+        "sourceId": {
+          "$ref": "#/$defs/id"
+        },
+        "pages": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "usage": {
+          "enum": [
+            "private-reference",
+            "licensed",
+            "original",
+            "public-domain"
+          ]
+        },
+        "reviewed": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "skill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "domain"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "domain": {
+          "enum": [
+            "foundation",
+            "technique",
+            "rhythm",
+            "fretboard",
+            "theory",
+            "style",
+            "song",
+            "performance",
+            "ear"
+          ]
+        },
+        "prerequisiteSkillIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "default": []
+        }
+      }
+    },
+    "exercise": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "type",
+        "instructions",
+        "skillIds",
+        "mastery"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "chord",
+            "change",
+            "strum",
+            "fingerstyle",
+            "scale",
+            "arpeggio",
+            "lick",
+            "ear",
+            "song",
+            "improv",
+            "performance",
+            "knowledge"
+          ]
+        },
+        "instructions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "skillIds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "tablature": {
+          "type": "string"
+        },
+        "chords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tempo": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "startBpm": {
+              "type": "integer",
+              "minimum": 20,
+              "maximum": 300
+            },
+            "targetBpm": {
+              "type": "integer",
+              "minimum": 20,
+              "maximum": 300
+            },
+            "stepBpm": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30
+            }
+          }
+        },
+        "mastery": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "cleanRepetitions"
+          ],
+          "properties": {
+            "cleanRepetitions": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "minimumBpm": {
+              "type": "integer",
+              "minimum": 20,
+              "maximum": 300
+            },
+            "maximumStumbles": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requiresRecording": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "listenFor": {
+          "description": "What a clean repetition sounds like - the self-check the player grades against.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "feedback": {
+          "description": "Which in-browser listening check fits this exercise.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mode"
+          ],
+          "properties": {
+            "mode": {
+              "enum": [
+                "none",
+                "timing",
+                "bend",
+                "vibrato",
+                "pitch"
+              ]
+            },
+            "notesPerBeat": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 8
+            },
+            "bendSemitones": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            }
+          }
+        },
+        "unverified": {
+          "description": "True until a human has checked the musical example against its source.",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "lesson": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "estimatedMinutes",
+        "skillIds",
+        "objectives",
+        "exercises"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "estimatedMinutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 180
+        },
+        "skillIds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "prerequisiteLessonIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "default": []
+        },
+        "objectives": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "explanation": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "exercises": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/exercise"
+          }
+        },
+        "sourceReferences": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sourceReference"
+          },
+          "default": []
+        }
+      }
+    },
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "lessons"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "lessons": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/lesson"
+          }
+        }
+      }
+    },
+    "course": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "level",
+        "outcomes",
+        "modules"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "level": {
+          "enum": [
+            "beginner",
+            "intermediate",
+            "advanced",
+            "mixed"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "prerequisiteSkillIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "default": []
+        },
+        "modules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/module"
+          }
+        },
+        "instrument": {
+          "$ref": "#/$defs/instrument"
+        }
+      }
+    },
+    "instrument": {
+      "enum": [
+        "electric",
+        "acoustic",
+        "both"
+      ]
+    }
+  }
+}

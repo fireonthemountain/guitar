@@ -5,8 +5,17 @@
 // Same contract as sync-worker/worker.js, so the app's sync client works
 // against either backend unchanged.
 
+import { createHash } from 'node:crypto';
+
 const TOKEN_RE = /^[A-Za-z0-9_-]{32,128}$/;
 const MAX_BYTES = 512 * 1024;
+const digest = (body) => createHash('sha1').update(body).digest('hex');
+// The comparison and write run atomically, including concurrent first writes.
+const COMPARE_AND_SET = `
+local current = redis.call('GET', KEYS[1]) or 'null'
+if redis.sha1hex(current) ~= ARGV[1] then return 0 end
+redis.call('SET', KEYS[1], ARGV[2])
+return 1`;
 
 function redisEnv() {
   const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
@@ -20,16 +29,22 @@ async function redis(env, cmd) {
     method: 'POST',
     headers: { Authorization: `Bearer ${env.token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(cmd),
+    signal: AbortSignal.timeout(10000),
   });
   if (!res.ok) throw new Error(`redis ${res.status}`);
-  return (await res.json()).result;
+  const data = await res.json();
+  if (data.error) throw new Error('database command failed');
+  return data.result;
 }
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, If-Match');
+  res.setHeader('Access-Control-Expose-Headers', 'ETag');
+  res.setHeader('Cache-Control', 'no-store');
   if (req.method === 'OPTIONS') return res.status(204).end();
+  if (!['GET', 'PUT'].includes(req.method)) return res.status(405).json({ error: 'method not allowed' });
 
   const token = req.query?.token;
   if (!TOKEN_RE.test(token || '')) return res.status(404).json({ error: 'not found' });
@@ -43,17 +58,26 @@ export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       const stored = await redis(env, ['GET', key]);
-      res.setHeader('Cache-Control', 'no-store');
+      res.setHeader('ETag', `"${digest(stored ?? 'null')}"`);
       res.setHeader('Content-Type', 'application/json');
       return res.status(200).send(stored ?? 'null');
     }
 
     if (req.method === 'PUT') {
-      const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body ?? null);
-      if (!body || body === 'null') return res.status(400).json({ error: 'empty body' });
-      if (body.length > MAX_BYTES) return res.status(413).json({ error: 'too large' });
-      JSON.parse(body); // store valid JSON only
-      await redis(env, ['SET', key, body]);
+      let body;
+      try {
+        body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body ?? null);
+        const parsed = JSON.parse(body);
+        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('invalid progress');
+      } catch { return res.status(400).json({ error: 'invalid progress JSON' }); }
+      if (Buffer.byteLength(body, 'utf8') > MAX_BYTES) return res.status(413).json({ error: 'too large' });
+      const expected = req.headers?.['if-match'];
+      if (!/^"[a-f0-9]{40}"$/.test(expected || '')) {
+        return res.status(428).json({ error: 'refresh the app and check the cloud copy before uploading' });
+      }
+      const written = await redis(env, ['EVAL', COMPARE_AND_SET, 1, key, expected.slice(1, -1), body]);
+      if (Number(written) !== 1) return res.status(409).json({ error: 'cloud progress changed; both devices must check the latest copy' });
+      res.setHeader('ETag', `"${digest(body)}"`);
       return res.status(200).json({ ok: true });
     }
 

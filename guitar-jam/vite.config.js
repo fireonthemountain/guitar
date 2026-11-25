@@ -1,15 +1,23 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import basicSsl from '@vitejs/plugin-basic-ssl';
 
 // BASE_PATH lets CI deploy under a sub-path (GitHub Pages serves at /guitar/).
 // Local dev/build stays at '/'.
 const base = process.env.BASE_PATH || '/';
 
+// `npm run dev:https` serves over https with a self-signed certificate. The
+// microphone checks in the Train tab need a secure origin, and a plain
+// http://192.168.x.x LAN address is not one — https is what makes the mic work
+// from a phone or another computer on the LAN.
+const https = process.env.HTTPS === '1';
+
 export default defineConfig({
   base,
   plugins: [
     react(),
+    ...(https ? [basicSsl()] : []),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icons/icon-192.png', 'icons/icon-512.png'],
@@ -34,6 +42,9 @@ export default defineConfig({
     }),
   ],
   server: {
-    host: true, // expose on the LAN
+    host: true, // expose on the LAN (0.0.0.0)
+  },
+  preview: {
+    host: true,
   },
 });

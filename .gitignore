@@ -3,3 +3,4 @@ node_modules/
 dist/
 *.tar.gz
 .env
+guitar-jam/private-data/
